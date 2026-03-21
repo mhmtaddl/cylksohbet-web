@@ -220,11 +220,7 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps
     if (!confirm('Bu üyeyi silmek istediğinize emin misiniz?')) return;
     setActionLoading(userId);
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userId);
-
+      const { error } = await supabase.rpc('delete_user_completely', { user_id: userId });
       if (error) throw error;
       setUsers(prev => prev.filter(u => u.id !== userId));
     } catch (err: any) {
