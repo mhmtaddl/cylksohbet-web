@@ -289,7 +289,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-surface-container-lowest/85 backdrop-blur-xl border-b border-outline-variant/10">
+      <nav className="fixed top-0 w-full z-50 bg-surface-container-lowest border-b border-outline-variant/15">
         <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 overflow-hidden rounded-2xl shadow-xl shadow-primary/20 border-2 border-primary/20 bg-surface-container-low">
@@ -405,13 +405,13 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Hero Section — Fullscreen */}
-      <header
-        className="relative h-screen overflow-hidden"
+      {/* Hero — sadece görsel + oklar + noktalar */}
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ height: 'calc(100vh - 72px - 200px)' }}
         onMouseEnter={() => setHeroPaused(true)}
         onMouseLeave={() => setHeroPaused(false)}
       >
-        {/* Background Images */}
         <AnimatePresence mode="sync" custom={heroDirection}>
           <motion.img
             key={heroIndex}
@@ -425,148 +425,141 @@ export default function App() {
             animate="center"
             exit="exit"
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-            src={heroImages[heroIndex] || 'https://picsum.photos/seed/chat-app-v2/1000/800'}
+            src={heroImages[heroIndex] || 'https://picsum.photos/seed/chat-app-v2/1600/900'}
             alt="Hero"
             className="absolute inset-0 w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
         </AnimatePresence>
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70" />
-
-        {/* Content */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 pt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="space-y-6 max-w-3xl"
-          >
-            {/* Badges */}
-            <div className="flex justify-center flex-wrap gap-2">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-white/80 text-[11px] font-bold tracking-widest uppercase border border-white/20 backdrop-blur-sm">
-                <Rocket size={11} />
-                {releaseData.version}
-              </div>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-white/80 text-[11px] font-bold tracking-widest uppercase border border-white/20 backdrop-blur-sm">
-                <Download size={11} />
-                {formatDownloadCount(downloadCount)} İndirme
-              </div>
-            </div>
-
-            {/* Title */}
-            {isEditMode ? (
-              <textarea
-                value={siteSettings.hero_baslik}
-                onChange={(e) => setSiteSettings({...siteSettings, hero_baslik: e.target.value})}
-                className="w-full bg-black/30 border-2 border-dashed border-white/50 focus:border-white outline-none resize-none font-headline text-4xl md:text-6xl font-black text-white tracking-tight leading-[1.1] rounded-2xl p-3 text-center"
-                rows={2}
-              />
-            ) : (
-              <h1 className="font-headline text-4xl md:text-6xl font-black text-white tracking-tight leading-[1.1] drop-shadow-2xl">
-                {siteSettings.hero_baslik.split(' ').slice(0, -2).join(' ')}{' '}
-                <span className="text-white/60">
-                  {siteSettings.hero_baslik.split(' ').slice(-2).join(' ')}
-                </span>
-              </h1>
-            )}
-
-            {/* Description */}
-            {isEditMode ? (
-              <textarea
-                value={siteSettings.hero_aciklama}
-                onChange={(e) => setSiteSettings({...siteSettings, hero_aciklama: e.target.value})}
-                className="w-full bg-black/30 border-2 border-dashed border-white/50 focus:border-white outline-none resize-none text-white/70 text-base md:text-lg max-w-xl mx-auto leading-relaxed rounded-2xl p-3 text-center"
-                rows={3}
-              />
-            ) : (
-              <p className="text-white/65 text-base md:text-lg max-w-xl mx-auto leading-relaxed drop-shadow-lg">
-                {siteSettings.hero_aciklama}
-              </p>
-            )}
-
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-              <button
-                onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e); }}
-                disabled={isDownloading && !isEditMode}
-                className={`group relative overflow-hidden px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all active:scale-95 min-w-[220px] text-sm shadow-2xl ${
-                  downloadComplete
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-primary text-on-primary hover:scale-[1.05] hover:shadow-primary/40'
-                } disabled:opacity-90 disabled:cursor-wait`}
-              >
-                <AnimatePresence mode="wait">
-                  {isDownloading ? (
-                    <motion.div key="loading" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-3">
-                      <Loader2 className="animate-spin" size={20} />
-                      <span>{releaseData.version} indiriliyor...</span>
-                    </motion.div>
-                  ) : downloadComplete ? (
-                    <motion.div key="complete" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-3">
-                      <CheckCircle2 size={20} />
-                      <span>İndirme Başlatıldı!</span>
-                    </motion.div>
-                  ) : (
-                    <motion.div key="default" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-3">
-                      <Download size={20} />
-                      {isEditMode ? (
-                        <input type="text" value={siteSettings.indirme_butonu_metni} onChange={(e) => setSiteSettings({...siteSettings, indirme_butonu_metni: e.target.value})} className="bg-transparent border-b border-dashed border-white/50 outline-none w-28 text-center" onClick={(e) => e.stopPropagation()} />
-                      ) : (
-                        <span>{siteSettings.indirme_butonu_metni}</span>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                {isDownloading && (
-                  <motion.div initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 h-1 bg-white/40" />
-                )}
-              </button>
-
-              <div className="relative overflow-hidden bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center cursor-default min-w-[160px] border border-white/20 text-sm shadow-xl">
-                {isEditMode ? (
-                  <div className="flex flex-col gap-1 z-10">
-                    <input type="text" value={siteSettings.hero_buton_metni} onChange={(e) => setSiteSettings({...siteSettings, hero_buton_metni: e.target.value})} className="bg-transparent border-b border-dashed border-white/50 outline-none w-24 text-center text-xs" onClick={(e) => e.stopPropagation()} placeholder="Normal" />
-                    <input type="text" value={siteSettings.hero_buton_metni_alternatif} onChange={(e) => setSiteSettings({...siteSettings, hero_buton_metni_alternatif: e.target.value})} className="bg-transparent border-b border-dashed border-white/50 outline-none w-24 text-center text-xs" onClick={(e) => e.stopPropagation()} placeholder="Alternatif" />
-                  </div>
-                ) : (
-                  <AnimatePresence mode="wait">
-                    <motion.span key={subscribeBtnText} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 30, opacity: 0 }} transition={{ duration: 0.5, ease: 'easeInOut' }} className="whitespace-nowrap">
-                      {subscribeBtnText}
-                    </motion.span>
-                  </AnimatePresence>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Left / Right Arrows */}
+        {/* Sol ok */}
         {heroImages.length > 1 && (
-          <>
-            <button onClick={heroPrev} className="absolute left-5 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/30 text-white backdrop-blur-sm border border-white/10 hover:bg-black/50 transition-all hover:scale-110 active:scale-95">
-              <ChevronLeft size={24} />
-            </button>
-            <button onClick={heroNext} className="absolute right-5 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/30 text-white backdrop-blur-sm border border-white/10 hover:bg-black/50 transition-all hover:scale-110 active:scale-95">
-              <ChevronRight size={24} />
-            </button>
-          </>
+          <button onClick={heroPrev} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-black/25 text-white border border-white/15 hover:bg-black/45 transition-all">
+            <ChevronLeft size={22} />
+          </button>
         )}
 
-        {/* Dot Indicators */}
+        {/* Sağ ok */}
         {heroImages.length > 1 && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          <button onClick={heroNext} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-black/25 text-white border border-white/15 hover:bg-black/45 transition-all">
+            <ChevronRight size={22} />
+          </button>
+        )}
+
+        {/* Nokta göstergeleri */}
+        {heroImages.length > 1 && (
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2">
             {heroImages.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => goHero(idx, idx > heroIndex ? 1 : -1)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${idx === heroIndex ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/60'}`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${idx === heroIndex ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/70'}`}
               />
             ))}
           </div>
         )}
-      </header>
+      </div>
+
+      {/* İçerik Bandı — navbar ile aynı tema */}
+      <section className="bg-surface-container-lowest border-t border-outline-variant/15" style={{ minHeight: '200px' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className="max-w-5xl mx-auto px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-8"
+        >
+          {/* Sol — başlık + açıklama */}
+          <div className="space-y-3 text-center md:text-left flex-1">
+            {/* Badges */}
+            <div className="flex gap-2 justify-center md:justify-start flex-wrap">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold tracking-widest uppercase border border-primary/20">
+                <Rocket size={10} /> {releaseData.version}
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold tracking-widest uppercase border border-primary/20">
+                <Download size={10} /> {formatDownloadCount(downloadCount)} İndirme
+              </span>
+            </div>
+
+            {isEditMode ? (
+              <textarea
+                value={siteSettings.hero_baslik}
+                onChange={(e) => setSiteSettings({...siteSettings, hero_baslik: e.target.value})}
+                className="w-full bg-transparent border-2 border-dashed border-primary/40 outline-none resize-none font-headline text-3xl md:text-4xl font-black text-on-surface tracking-tight leading-tight rounded-xl p-2"
+                rows={2}
+              />
+            ) : (
+              <h1 className="font-headline text-3xl md:text-4xl font-black text-on-surface tracking-tight leading-tight">
+                {siteSettings.hero_baslik}
+              </h1>
+            )}
+
+            {isEditMode ? (
+              <textarea
+                value={siteSettings.hero_aciklama}
+                onChange={(e) => setSiteSettings({...siteSettings, hero_aciklama: e.target.value})}
+                className="w-full bg-transparent border-2 border-dashed border-primary/40 outline-none resize-none text-on-surface/55 text-sm leading-relaxed rounded-xl p-2"
+                rows={3}
+              />
+            ) : (
+              <p className="text-on-surface/55 text-sm leading-relaxed max-w-lg">
+                {siteSettings.hero_aciklama}
+              </p>
+            )}
+          </div>
+
+          {/* Sağ — butonlar */}
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+            <button
+              onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e); }}
+              disabled={isDownloading && !isEditMode}
+              className={`group relative overflow-hidden px-7 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2.5 transition-all active:scale-95 text-sm shadow-lg ${
+                downloadComplete
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-primary text-on-primary hover:scale-[1.04] hover:shadow-xl hover:shadow-primary/30'
+              } disabled:opacity-90 disabled:cursor-wait`}
+            >
+              <AnimatePresence mode="wait">
+                {isDownloading ? (
+                  <motion.div key="loading" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="flex items-center gap-2">
+                    <Loader2 className="animate-spin" size={18} /><span>{releaseData.version} indiriliyor...</span>
+                  </motion.div>
+                ) : downloadComplete ? (
+                  <motion.div key="complete" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="flex items-center gap-2">
+                    <CheckCircle2 size={18} /><span>İndirme Başlatıldı!</span>
+                  </motion.div>
+                ) : (
+                  <motion.div key="default" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="flex items-center gap-2">
+                    <Download size={18} />
+                    {isEditMode ? (
+                      <input type="text" value={siteSettings.indirme_butonu_metni} onChange={(e) => setSiteSettings({...siteSettings, indirme_butonu_metni: e.target.value})} className="bg-transparent border-b border-dashed border-white/50 outline-none w-24 text-center" onClick={(e) => e.stopPropagation()} />
+                    ) : (
+                      <span>{siteSettings.indirme_butonu_metni}</span>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {isDownloading && (
+                <motion.div initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 h-0.5 bg-white/40" />
+              )}
+            </button>
+
+            <div className="relative overflow-hidden bg-surface-container-high text-on-surface px-7 py-3.5 rounded-2xl font-bold flex items-center justify-center cursor-default border border-outline-variant/20 text-sm">
+              {isEditMode ? (
+                <div className="flex flex-col gap-1">
+                  <input type="text" value={siteSettings.hero_buton_metni} onChange={(e) => setSiteSettings({...siteSettings, hero_buton_metni: e.target.value})} className="bg-transparent border-b border-dashed border-primary/40 outline-none w-24 text-center text-xs" onClick={(e) => e.stopPropagation()} placeholder="Normal" />
+                  <input type="text" value={siteSettings.hero_buton_metni_alternatif} onChange={(e) => setSiteSettings({...siteSettings, hero_buton_metni_alternatif: e.target.value})} className="bg-transparent border-b border-dashed border-primary/40 outline-none w-24 text-center text-xs" onClick={(e) => e.stopPropagation()} placeholder="Alternatif" />
+                </div>
+              ) : (
+                <AnimatePresence mode="wait">
+                  <motion.span key={subscribeBtnText} initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }} transition={{ duration: 0.4, ease: 'easeInOut' }} className="whitespace-nowrap">
+                    {subscribeBtnText}
+                  </motion.span>
+                </AnimatePresence>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </section>
 
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-outline-variant/10 bg-surface-container-lowest">
