@@ -24,25 +24,28 @@ export async function fetchGitHubReleaseData(owner: string, repo: string) {
     console.log('GitHub status:', response.status, response.statusText);
 
     const rawText = await response.text();
-    console.log('GitHub raw response:', rawText);
 
     if (!response.ok) {
+      console.error('GitHub error response:', rawText);
       throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
     }
 
     const latestRelease = JSON.parse(rawText);
-    console.log('Parsed release:', latestRelease);
-
     const assets = Array.isArray(latestRelease.assets) ? latestRelease.assets : [];
+
+    console.log('ALL ASSETS:', assets);
+
     const mainInstaller = assets.find((asset: any) => {
       const name = String(asset.name || '').toLowerCase();
-      return name.endsWith('.exe') || name.endsWith('.msi');
+      return name.endsWith('.exe') && !name.includes('blockmap');
     });
+
+    console.log('SELECTED INSTALLER:', mainInstaller);
 
     return {
       version: latestRelease.tag_name || 'v0.0.0',
-      totalDownloads: Number(mainInstaller?.download_count || 0),
-      downloadUrl: mainInstaller?.browser_download_url || latestRelease.html_url || null,
+      totalDownloads: mainInstaller?.download_count ?? 0,
+      downloadUrl: mainInstaller?.browser_download_url || null,
     };
   } catch (error) {
     console.error('Error fetching GitHub data:', error);
