@@ -56,18 +56,16 @@ export default function App() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadComplete, setDownloadComplete] = useState(false);
   const [releaseData, setReleaseData] = useState<GitHubReleaseData>({
-    version: 'v2.4', // Fallback version
-    totalDownloads: 1200000, // Fallback download count
-    downloadUrl: '#' // Fallback download URL
+    version: 'v0.0.0',
+    totalDownloads: 0,
+    downloadUrl: null
   });
 
   // Fetch GitHub Release Data
   useEffect(() => {
     async function getReleaseData() {
       const data = await fetchGitHubReleaseData(GITHUB_OWNER, GITHUB_REPO);
-      if (data.version !== 'v0.0.0') {
-        setReleaseData(data);
-      }
+      setReleaseData(data);
     }
     getReleaseData();
 
