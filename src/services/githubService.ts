@@ -9,54 +9,35 @@ export interface GitHubReleaseData {
   downloadUrl: string | null;
 }
 
-/**
- * Fetches release data from GitHub API.
- * @param owner The owner of the repository.
- * @param repo The name of the repository.
- * @returns A promise that resolves to the release data.
- */
 export async function fetchGitHubReleaseData(owner: string, repo: string): Promise<GitHubReleaseData> {
   try {
     const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/releases`,
+      `https://api.github.com/repos/${owner}/${repo}/releases/latest`,
       {
         headers: {
-          'Accept': 'application/vnd.github+json',
+          Accept: 'application/vnd.github+json',
           'Cache-Control': 'no-cache',
         },
       }
     );
+
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
     }
 
-    const releases = await response.json();
-    if (!Array.isArray(releases) || releases.length === 0) {
-      return { version: 'v0.0.0', totalDownloads: 0, downloadUrl: null };
-    }
+    const latestRelease = await response.json();
 
-    // Calculate total downloads across all releases
-    let totalDownloads = 0;
-    releases.forEach((release: any) => {
-      release.assets?.forEach((asset: any) => {
-        totalDownloads += Number(asset.download_count || 0);
-      });
+    const assets = Array.isArray(latestRelease.assets) ? latestRelease.assets : [];
+
+    const mainInstaller = assets.find((asset: any) => {
+      const name = String(asset.name || '').toLowerCase();
+      return name.endsWith('.exe') || name.endsWith('.msi');
     });
 
-    // Get latest release info
-    const latestRelease = releases[0];
-    const version = latestRelease.tag_name || 'v0.0.0';
-
-    // Find the Windows download URL (usually .exe or .msi)
-    const windowsAsset = latestRelease.assets?.find((asset: any) =>
-      asset.name?.toLowerCase().endsWith('.exe') ||
-      asset.name?.toLowerCase().endsWith('.msi')
-    );
-
     return {
-      version,
-      totalDownloads,
-      downloadUrl: windowsAsset ? windowsAsset.browser_download_url : latestRelease.html_url
+      version: latestRelease.tag_name || 'v0.0.0',
+      totalDownloads: Number(mainInstaller?.download_count || 0),
+      downloadUrl: mainInstaller?.browser_download_url || latestRelease.html_url || null,
     };
   } catch (error) {
     console.error('Error fetching GitHub data:', error);
