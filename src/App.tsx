@@ -130,24 +130,18 @@ export default function App() {
   };
 
   const handleDownload = (e: React.MouseEvent) => {
-    if (isDownloading || !releaseData.downloadUrl || releaseData.downloadUrl === '#') return;
-    
+    if (isDownloading || !releaseData.downloadUrl) return;
+
+    console.log('DOWNLOAD URL USED BY BUTTON:', releaseData.downloadUrl);
+
     setIsDownloading(true);
-    
-    // Simulate a short delay for the "loading" feel before actual download starts
+
     setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = releaseData.downloadUrl!;
-      link.setAttribute('download', '');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // Keep loading state for a bit to show the "indiriliyor" text
+      window.open(releaseData.downloadUrl!, '_blank');
+
       setTimeout(() => {
         setIsDownloading(false);
         setDownloadComplete(true);
-        // Reset complete state after a few seconds
         setTimeout(() => setDownloadComplete(false), 5000);
       }, 3000);
     }, 800);

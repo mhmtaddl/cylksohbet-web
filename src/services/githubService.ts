@@ -40,11 +40,13 @@ export async function fetchGitHubReleaseData(owner: string, repo: string) {
       return name.endsWith('.exe') && !name.includes('blockmap');
     });
 
-    console.log('SELECTED INSTALLER:', mainInstaller);
+    console.log('SELECTED INSTALLER name:', mainInstaller?.name);
+    console.log('SELECTED INSTALLER download_count:', mainInstaller?.download_count);
+    console.log('SELECTED INSTALLER browser_download_url:', mainInstaller?.browser_download_url);
 
     return {
       version: latestRelease.tag_name || 'v0.0.0',
-      totalDownloads: mainInstaller?.download_count ?? 0,
+      totalDownloads: Number(mainInstaller?.download_count || 0),
       downloadUrl: mainInstaller?.browser_download_url || null,
     };
   } catch (error) {
