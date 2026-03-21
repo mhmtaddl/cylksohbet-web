@@ -17,8 +17,8 @@ export async function fetchGitHubReleaseData(owner: string, repo: string) {
     const response = await fetch(url, {
       headers: {
         Accept: 'application/vnd.github+json',
-        'Cache-Control': 'no-cache',
       },
+      cache: 'no-store',
     });
 
     console.log('GitHub status:', response.status, response.statusText);
