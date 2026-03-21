@@ -427,7 +427,7 @@ export default function App() {
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
             src={heroImages[heroIndex] || 'https://picsum.photos/seed/chat-app-v2/1600/900'}
             alt="Hero"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-contain bg-black"
             referrerPolicy="no-referrer"
           />
         </AnimatePresence>
