@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fetchGitHubReleaseData, GitHubReleaseData } from './services/githubService';
+import { fetchDownloadCount, incrementDownloadCount } from './services/downloadStats';
 import { LoginModal } from './components/LoginModal';
 import { AdminPanel } from './components/AdminPanel';
 import { HeroImageCarousel } from './components/HeroImageCarousel';
@@ -60,14 +61,20 @@ export default function App() {
     totalDownloads: 0,
     downloadUrl: null
   });
+  const [downloadCount, setDownloadCount] = useState(0);
 
-  // Fetch GitHub Release Data
+  // Fetch GitHub Release Data + download count
   useEffect(() => {
     async function getReleaseData() {
       const data = await fetchGitHubReleaseData(GITHUB_OWNER, GITHUB_REPO);
       setReleaseData(data);
     }
+    async function getDownloadCount() {
+      const count = await fetchDownloadCount();
+      setDownloadCount(count);
+    }
     getReleaseData();
+    getDownloadCount();
 
     // Fetch site settings
     const fetchSettings = async () => {
@@ -129,22 +136,21 @@ export default function App() {
     return count.toString();
   };
 
-  const handleDownload = (e: React.MouseEvent) => {
+  const handleDownload = async (e: React.MouseEvent) => {
     if (isDownloading || !releaseData.downloadUrl) return;
-
-    console.log('DOWNLOAD URL USED BY BUTTON:', releaseData.downloadUrl);
 
     setIsDownloading(true);
 
-    setTimeout(() => {
-      window.open(releaseData.downloadUrl!, '_blank');
+    await incrementDownloadCount();
+    setDownloadCount(prev => prev + 1);
 
-      setTimeout(() => {
-        setIsDownloading(false);
-        setDownloadComplete(true);
-        setTimeout(() => setDownloadComplete(false), 5000);
-      }, 3000);
-    }, 800);
+    window.open(releaseData.downloadUrl!, '_blank');
+
+    setTimeout(() => {
+      setIsDownloading(false);
+      setDownloadComplete(true);
+      setTimeout(() => setDownloadComplete(false), 5000);
+    }, 3000);
   };
 
   const handleSaveEdits = async () => {
@@ -390,7 +396,7 @@ export default function App() {
               </div>
               <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-secondary/10 text-secondary text-xs font-bold tracking-widest uppercase border border-secondary/20">
                 <Download size={14} />
-                {formatDownloadCount(releaseData.totalDownloads)} İndirme
+                {formatDownloadCount(downloadCount)} İndirme
               </div>
             </div>
 
