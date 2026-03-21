@@ -17,9 +17,17 @@ export interface GitHubReleaseData {
  */
 export async function fetchGitHubReleaseData(owner: string, repo: string): Promise<GitHubReleaseData> {
   try {
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases`);
+    const response = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/releases`,
+      {
+        headers: {
+          'Accept': 'application/vnd.github+json',
+          'Cache-Control': 'no-cache',
+        },
+      }
+    );
     if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.statusText}`);
+      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
     }
 
     const releases = await response.json();
@@ -31,7 +39,7 @@ export async function fetchGitHubReleaseData(owner: string, repo: string): Promi
     let totalDownloads = 0;
     releases.forEach((release: any) => {
       release.assets?.forEach((asset: any) => {
-        totalDownloads += asset.download_count || 0;
+        totalDownloads += Number(asset.download_count || 0);
       });
     });
 
@@ -40,8 +48,9 @@ export async function fetchGitHubReleaseData(owner: string, repo: string): Promi
     const version = latestRelease.tag_name || 'v0.0.0';
 
     // Find the Windows download URL (usually .exe or .msi)
-    const windowsAsset = latestRelease.assets?.find((asset: any) => 
-      asset.name.endsWith('.exe') || asset.name.endsWith('.msi')
+    const windowsAsset = latestRelease.assets?.find((asset: any) =>
+      asset.name?.toLowerCase().endsWith('.exe') ||
+      asset.name?.toLowerCase().endsWith('.msi')
     );
 
     return {

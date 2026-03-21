@@ -29,7 +29,7 @@ import { getSiteSettings } from './lib/siteSettings';
 
 // GitHub Repository Configuration
 // Replace with your actual repository owner and name
-const GITHUB_OWNER = 'mhmtaddl'; 
+const GITHUB_OWNER = 'mhmtaddl';
 const GITHUB_REPO = 'caylaklar-sesli-sohbet';
 
 export default function App() {
