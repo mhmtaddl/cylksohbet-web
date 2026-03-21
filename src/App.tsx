@@ -455,15 +455,6 @@ export default function App() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30" />
 
         {/* İçerik — altta */}
-        {/* Sağ üst köşe — versiyon + indirme */}
-        <div className="absolute top-20 right-6 z-10 flex flex-col items-end gap-1.5">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/30 text-white/60 text-[10px] font-bold tracking-widest uppercase backdrop-blur-sm">
-            <Rocket size={9} /> {releaseData.version}
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/30 text-white/60 text-[10px] font-bold tracking-widest uppercase backdrop-blur-sm">
-            <Download size={9} /> {formatDownloadCount(downloadCount)} İndirme
-          </span>
-        </div>
 
         {/* Alt içerik — başlık + açıklama + butonlar */}
         <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-10">
@@ -523,8 +514,19 @@ export default function App() {
               )}
             </div>
 
-            {/* Sağ — butonlar */}
-            <div className="flex flex-row gap-3 shrink-0">
+            {/* Sağ — versiyon + indirme + butonlar */}
+            <div className="flex flex-col gap-3 shrink-0 items-end">
+              {/* Versiyon ve indirme sayısı */}
+              <div className="flex gap-3">
+                <span className="inline-flex items-center gap-1.5 text-white/60 text-xs font-semibold">
+                  <Rocket size={11} className="text-white/40" /> {releaseData.version}
+                </span>
+                <span className="text-white/30">·</span>
+                <span className="inline-flex items-center gap-1.5 text-white/60 text-xs font-semibold">
+                  <Download size={11} className="text-white/40" /> {formatDownloadCount(downloadCount)} İndirme
+                </span>
+              </div>
+            <div className="flex flex-row gap-3">
               {/* İndir butonu — görselden renk alır */}
               <button
                 onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e); }}
@@ -574,6 +576,7 @@ export default function App() {
                   </AnimatePresence>
                 )}
               </div>
+            </div>
             </div>
           </motion.div>
         </div>
