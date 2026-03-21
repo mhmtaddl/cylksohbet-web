@@ -16,6 +16,9 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Headphones,
+  Mic,
+  Volume2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fetchGitHubReleaseData, GitHubReleaseData } from './services/githubService';
@@ -480,8 +483,30 @@ export default function App() {
                   rows={2}
                 />
               ) : (
-                <h1 className="font-headline text-3xl md:text-4xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
-                  {siteSettings.hero_baslik}
+                <h1 className="font-headline font-black tracking-tight leading-tight drop-shadow-lg">
+                  {/* Satır 1: Caylaklar ile — beyaz */}
+                  <span className="block text-3xl md:text-5xl text-white">
+                    Ca<Headphones className="inline-block align-middle -mt-1 mx-0.5 text-white" size={36} />laklar{' '}
+                    <Mic className="inline-block align-middle -mt-1 mx-0.5 text-white" size={30} />le
+                  </span>
+                  {/* Satır 2: Sohbete Doğru — mor→mavi→cyan gradient */}
+                  <span className="block text-4xl md:text-6xl">
+                    <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                      S
+                    </span>
+                    <Volume2 className="inline-block align-middle -mt-1 mx-0.5 text-blue-400" size={40} />
+                    <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                      hbete
+                    </span>
+                    {' '}
+                    <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                      D
+                    </span>
+                    <Volume2 className="inline-block align-middle -mt-1 mx-0.5 text-cyan-400" size={40} />
+                    <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                      ğru
+                    </span>
+                  </span>
                 </h1>
               )}
               {isEditMode ? (
