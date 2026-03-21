@@ -34,7 +34,7 @@ const GITHUB_OWNER = 'mhmtaddl';
 const GITHUB_REPO = 'caylaklar-sesli-sohbet';
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [isSettingsLoading, setIsSettingsLoading] = useState(true);
@@ -377,7 +377,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Hero Section */}
-      <header className="relative pt-40 pb-24 px-6 overflow-hidden min-h-screen flex items-center">
+      <header className="relative px-6 overflow-hidden h-screen flex items-center">
         {/* Background Decorative Elements */}
         <div className="absolute -z-10 top-1/4 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[140px] animate-pulse" />
         <div className="absolute -z-10 bottom-1/4 left-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px]" />

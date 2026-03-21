@@ -23,16 +23,17 @@
   }
 
   .dark body {
-    --color-surface: #0a0f1d;
-    --color-on-surface: #eef0ff;
-    --color-surface-container-low: #131b2e;
-    --color-surface-container-lowest: #1c253d;
-    --color-primary: #b2c5ff;
-    --color-primary-container: #0052cc;
-    --color-on-primary: #001848;
-    --color-secondary-container: #3a485b;
-    --color-on-secondary-container: #d5e3fc;
-    --color-outline-variant: #434654;
+    --color-surface: #0d0d0d;
+    --color-on-surface: #f0f0f0;
+    --color-surface-container-low: #161616;
+    --color-surface-container-lowest: #1f1f1f;
+    --color-surface-container-high: #2a2a2a;
+    --color-primary: #a78bfa;
+    --color-primary-container: #7c3aed;
+    --color-on-primary: #ffffff;
+    --color-secondary-container: #2d2040;
+    --color-on-secondary-container: #c4b5fd;
+    --color-outline-variant: #3a3a3a;
   }
 }
 
@@ -42,7 +43,7 @@
 }
 
 .dark .glass-card {
-  background: rgba(28, 37, 61, 0.85);
+  background: rgba(20, 20, 20, 0.85);
 }
 
 .selection-primary ::selection {

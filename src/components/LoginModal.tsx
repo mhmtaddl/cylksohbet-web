@@ -64,7 +64,7 @@ export const LoginModal = ({ onClose }: LoginModalProps) => {
           });
           if (error) throw error;
           
-          // Create profile with is_approved false
+          // Create profile with is_approved false, then sign out
           if (data.user) {
             const { error: profileError } = await supabase
               .from('profiles')
@@ -73,9 +73,9 @@ export const LoginModal = ({ onClose }: LoginModalProps) => {
               ]);
             if (profileError) {
               console.error('Profile creation error:', profileError);
-              // We don't throw here to not block the user if profile fails but auth worked, 
-              // but ideally we should handle it.
             }
+            // Sign out immediately — login requires admin approval
+            await supabase.auth.signOut();
           }
 
           alert('Kaydınız alındı! Yönetici onayından sonra giriş yapabilirsiniz.');
