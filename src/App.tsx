@@ -377,61 +377,63 @@ export default function App() {
       </AnimatePresence>
 
       {/* Hero Section */}
-      <header className="relative px-6 overflow-hidden h-screen flex items-center">
-        {/* Background Decorative Elements */}
-        <div className="absolute -z-10 top-1/4 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[140px] animate-pulse" />
-        <div className="absolute -z-10 bottom-1/4 left-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px]" />
+      <header className="relative px-8 overflow-hidden h-screen flex items-center">
+        {/* Background */}
+        <div className="absolute -z-10 top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute -z-10 bottom-0 left-0 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px]" />
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="lg:col-span-7 space-y-10"
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="space-y-8"
           >
-            <div className="flex flex-wrap gap-3">
-              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase border border-primary/20">
-                <Rocket size={14} />
-                Sürüm {releaseData.version} Yayında
+            {/* Badges */}
+            <div className="flex flex-wrap gap-2">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-on-surface/8 text-on-surface/60 text-[11px] font-bold tracking-widest uppercase border border-on-surface/10">
+                <Rocket size={11} />
+                {releaseData.version}
               </div>
-              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-secondary/10 text-secondary text-xs font-bold tracking-widest uppercase border border-secondary/20">
-                <Download size={14} />
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-on-surface/8 text-on-surface/60 text-[11px] font-bold tracking-widest uppercase border border-on-surface/10">
+                <Download size={11} />
                 {formatDownloadCount(downloadCount)} İndirme
               </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Title */}
+            <div className="space-y-5">
               {isEditMode ? (
                 <textarea
                   value={siteSettings.hero_baslik}
                   onChange={(e) => setSiteSettings({...siteSettings, hero_baslik: e.target.value})}
-                  className="w-full bg-transparent border-2 border-dashed border-primary/50 focus:border-primary focus:bg-surface-container-low/50 outline-none resize-none font-headline text-6xl md:text-8xl font-black text-on-surface tracking-[-0.05em] leading-[0.9] lg:max-w-3xl rounded-2xl p-2"
+                  className="w-full bg-transparent border-2 border-dashed border-primary/50 focus:border-primary outline-none resize-none font-headline text-5xl md:text-6xl font-black text-on-surface tracking-tight leading-[1.05] rounded-2xl p-2"
                   rows={2}
                 />
               ) : (
-                <h1 className="font-headline text-6xl md:text-8xl font-black text-on-surface tracking-[-0.05em] leading-[0.9] lg:max-w-3xl">
-                  {siteSettings.hero_baslik.split(' ').slice(0, -2).join(' ')} <br />
-                  <span className="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">
+                <h1 className="font-headline text-5xl md:text-6xl font-black text-on-surface tracking-tight leading-[1.05]">
+                  {siteSettings.hero_baslik.split(' ').slice(0, -2).join(' ')}{' '}
+                  <span className="text-on-surface/30">
                     {siteSettings.hero_baslik.split(' ').slice(-2).join(' ')}
                   </span>
                 </h1>
               )}
-              
+
               {isEditMode ? (
                 <textarea
                   value={siteSettings.hero_aciklama}
                   onChange={(e) => setSiteSettings({...siteSettings, hero_aciklama: e.target.value})}
-                  className="w-full bg-transparent border-2 border-dashed border-primary/50 focus:border-primary focus:bg-surface-container-low/50 outline-none resize-none text-on-surface/80 text-xl md:text-2xl max-w-2xl leading-relaxed font-medium rounded-2xl p-2"
+                  className="w-full bg-transparent border-2 border-dashed border-primary/50 focus:border-primary outline-none resize-none text-on-surface/55 text-base md:text-lg max-w-xl leading-relaxed rounded-2xl p-2"
                   rows={3}
                 />
               ) : (
-                <p className="text-on-surface/80 text-xl md:text-2xl max-w-2xl leading-relaxed font-medium">
+                <p className="text-on-surface/55 text-base md:text-lg max-w-xl leading-relaxed">
                   {siteSettings.hero_aciklama}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-5 pt-6">
+            <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 onClick={(e) => {
                   if (isEditMode) {
@@ -441,7 +443,7 @@ export default function App() {
                   handleDownload(e);
                 }}
                 disabled={isDownloading && !isEditMode}
-                className={`group relative overflow-hidden px-10 py-5 rounded-2xl font-bold flex items-center justify-center gap-4 transition-all active:scale-95 min-w-[280px] ${
+                className={`group relative overflow-hidden px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all active:scale-95 min-w-[220px] text-sm ${
                   downloadComplete 
                     ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
                     : 'bg-primary text-on-primary hover:scale-[1.05] hover:shadow-2xl hover:shadow-primary/40'
@@ -508,7 +510,7 @@ export default function App() {
                 )}
               </button>
               
-              <div className="relative overflow-hidden bg-surface-container-high text-on-surface px-10 py-5 rounded-2xl font-bold flex items-center justify-center cursor-default min-w-[180px] border border-outline-variant/20">
+              <div className="relative overflow-hidden bg-surface-container-high text-on-surface px-8 py-4 rounded-2xl font-bold flex items-center justify-center cursor-default min-w-[160px] border border-outline-variant/20 text-sm">
                 {isEditMode ? (
                   <div className="flex flex-col gap-1 z-10">
                     <input
@@ -547,16 +549,13 @@ export default function App() {
           </motion.div>
 
           {siteSettings.hero_gorseller.length > 0 && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 1, delay: 0.2, ease: "backOut" }}
-              className="lg:col-span-5 relative"
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+              className="relative"
             >
               <HeroImageCarousel images={siteSettings.hero_gorseller} />
-              {/* Decorative Orbs */}
-              <div className="absolute -top-16 -right-16 w-48 h-48 bg-primary/30 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-primary/20 rounded-full blur-3xl" />
             </motion.div>
           )}
         </div>

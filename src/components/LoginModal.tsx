@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, ShieldCheck, ArrowRight, RefreshCw } from 'lucide-react';
+import { X, Mail, Lock, Loader2, AlertCircle, CheckCircle2, Eye, EyeOff, ShieldCheck, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '../lib/supabase';
 
@@ -18,6 +18,7 @@ export const LoginModal = ({ onClose }: LoginModalProps) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(0);
 
   // Cooldown timer for resending code
@@ -78,8 +79,8 @@ export const LoginModal = ({ onClose }: LoginModalProps) => {
             await supabase.auth.signOut();
           }
 
-          alert('Kaydınız alındı! Yönetici onayından sonra giriş yapabilirsiniz.');
-          onClose();
+          setSuccess('Kaydınız alındı! Yönetici onayından sonra giriş yapabilirsiniz.');
+          setTimeout(() => onClose(), 3000);
         }
       } else {
         // Login with Password
@@ -130,7 +131,7 @@ export const LoginModal = ({ onClose }: LoginModalProps) => {
       });
       if (error) throw error;
       setCooldown(30);
-      alert('Yeni kod gönderildi!');
+      setSuccess('Yeni kod gönderildi!');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -171,6 +172,13 @@ export const LoginModal = ({ onClose }: LoginModalProps) => {
               <div className="flex items-center gap-3 p-4 bg-error-container text-on-error-container rounded-2xl text-sm border border-error/20">
                 <AlertCircle size={18} />
                 <span>{error}</span>
+              </div>
+            )}
+
+            {success && (
+              <div className="flex items-center gap-3 p-4 bg-emerald-500/10 text-emerald-600 rounded-2xl text-sm border border-emerald-500/20">
+                <CheckCircle2 size={18} />
+                <span>{success}</span>
               </div>
             )}
 
