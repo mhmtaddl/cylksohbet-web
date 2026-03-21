@@ -7,8 +7,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Download,
   Rocket,
-  Sun,
-  Moon,
   Loader2,
   CheckCircle2,
   LogIn,
@@ -34,7 +32,6 @@ const GITHUB_OWNER = 'mhmtaddl';
 const GITHUB_REPO = 'caylaklar-sesli-sohbet';
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [isSettingsLoading, setIsSettingsLoading] = useState(true);
@@ -65,6 +62,7 @@ export default function App() {
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroDirection, setHeroDirection] = useState(1);
   const [heroPaused, setHeroPaused] = useState(false);
+  const [btnColor, setBtnColor] = useState('rgba(124, 58, 237, 0.92)');
 
   // Fetch GitHub Release Data + download count
   useEffect(() => {
@@ -122,13 +120,10 @@ export default function App() {
     return () => clearInterval(interval);
   }, [siteSettings.hero_buton_metni, siteSettings.hero_buton_metni_alternatif]);
 
+  // Dark mod her zaman aktif
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
+    document.documentElement.classList.add('dark');
+  }, []);
 
   const heroImages = siteSettings.hero_gorseller;
 
@@ -155,6 +150,37 @@ export default function App() {
     }, 5000);
     return () => clearInterval(timer);
   }, [heroImages.length, heroPaused, heroIndex]);
+
+  // Görselin dominant rengini çıkar → buton rengi olarak kullan
+  useEffect(() => {
+    const src = heroImages[heroIndex];
+    if (!src) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(img, 0, img.naturalHeight * 0.6, img.naturalWidth, img.naturalHeight * 0.4, 0, 0, 16, 16);
+        const d = ctx.getImageData(0, 0, 16, 16).data;
+        let r = 0, g = 0, b = 0;
+        for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; }
+        const n = d.length / 4;
+        r = Math.round(r / n); g = Math.round(g / n); b = Math.round(b / n);
+        // Doygunluğu artır, çok koyu/açık ise düzelt
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        const factor = max < 60 ? 1.8 : max > 200 ? 0.7 : 1.2;
+        r = Math.min(255, Math.round(r * factor));
+        g = Math.min(255, Math.round(g * factor));
+        b = Math.min(255, Math.round(b * factor));
+        setBtnColor(`rgba(${r}, ${g}, ${b}, 0.95)`);
+      } catch {}
+    };
+    img.src = src;
+  }, [heroIndex, heroImages]);
 
   const formatDownloadCount = (count: number) => {
     if (count >= 1000000) {
@@ -312,14 +338,6 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className="p-2.5 rounded-2xl bg-white/10 text-white hover:bg-white/20 transition-all hover:scale-110 active:scale-90"
-              aria-label="Toggle Theme"
-            >
-              {isDarkMode ? <Sun size={22} /> : <Moon size={22} />}
-            </button>
-
             {user ? (
               <div className="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-2xl border border-white/20">
                 <User size={18} className="text-white" />
@@ -434,24 +452,26 @@ export default function App() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30" />
 
         {/* İçerik — altta */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-12 pt-20">
+        {/* Sağ üst köşe — versiyon + indirme */}
+        <div className="absolute top-20 right-6 z-10 flex flex-col items-end gap-1.5">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/30 text-white/60 text-[10px] font-bold tracking-widest uppercase backdrop-blur-sm">
+            <Rocket size={9} /> {releaseData.version}
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/30 text-white/60 text-[10px] font-bold tracking-widest uppercase backdrop-blur-sm">
+            <Download size={9} /> {formatDownloadCount(downloadCount)} İndirme
+          </span>
+        </div>
+
+        {/* Alt içerik — başlık + açıklama + butonlar */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
-            className="max-w-5xl mx-auto flex flex-col md:flex-row items-end justify-between gap-8"
+            className="max-w-5xl mx-auto flex flex-col md:flex-row items-end justify-between gap-6"
           >
             {/* Sol — başlık + açıklama */}
-            <div className="space-y-3 flex-1">
-              <div className="flex gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/80 text-[10px] font-bold tracking-widest uppercase border border-white/20 backdrop-blur-sm">
-                  <Rocket size={10} /> {releaseData.version}
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/80 text-[10px] font-bold tracking-widest uppercase border border-white/20 backdrop-blur-sm">
-                  <Download size={10} /> {formatDownloadCount(downloadCount)} İndirme
-                </span>
-              </div>
-
+            <div className="space-y-2 flex-1">
               {isEditMode ? (
                 <textarea
                   value={siteSettings.hero_baslik}
@@ -464,7 +484,6 @@ export default function App() {
                   {siteSettings.hero_baslik}
                 </h1>
               )}
-
               {isEditMode ? (
                 <textarea
                   value={siteSettings.hero_aciklama}
@@ -473,37 +492,37 @@ export default function App() {
                   rows={3}
                 />
               ) : (
-                <p className="text-white/70 text-sm leading-relaxed max-w-lg drop-shadow">
+                <p className="text-white/65 text-sm leading-relaxed max-w-lg drop-shadow">
                   {siteSettings.hero_aciklama}
                 </p>
               )}
             </div>
 
             {/* Sağ — butonlar */}
-            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+            <div className="flex flex-row gap-3 shrink-0">
+              {/* İndir butonu — görselden renk alır */}
               <button
                 onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e); }}
                 disabled={isDownloading && !isEditMode}
-                className={`group relative overflow-hidden px-7 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2.5 transition-all active:scale-95 text-sm shadow-2xl ${
-                  downloadComplete
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-primary text-on-primary hover:scale-[1.04]'
+                style={downloadComplete ? {} : { backgroundColor: btnColor }}
+                className={`group relative overflow-hidden px-7 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-colors active:scale-95 text-sm shadow-2xl text-white min-w-[180px] ${
+                  downloadComplete ? 'bg-emerald-500' : 'hover:brightness-110'
                 } disabled:opacity-90 disabled:cursor-wait`}
               >
                 <AnimatePresence mode="wait">
                   {isDownloading ? (
-                    <motion.div key="loading" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="flex items-center gap-2">
-                      <Loader2 className="animate-spin" size={18} /><span>{releaseData.version} indiriliyor...</span>
+                    <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                      <Loader2 className="animate-spin" size={16} /><span>İndiriliyor...</span>
                     </motion.div>
                   ) : downloadComplete ? (
-                    <motion.div key="complete" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="flex items-center gap-2">
-                      <CheckCircle2 size={18} /><span>İndirme Başlatıldı!</span>
+                    <motion.div key="complete" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                      <CheckCircle2 size={16} /><span>Başlatıldı!</span>
                     </motion.div>
                   ) : (
-                    <motion.div key="default" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="flex items-center gap-2">
-                      <Download size={18} />
+                    <motion.div key="default" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                      <Download size={16} />
                       {isEditMode ? (
-                        <input type="text" value={siteSettings.indirme_butonu_metni} onChange={(e) => setSiteSettings({...siteSettings, indirme_butonu_metni: e.target.value})} className="bg-transparent border-b border-dashed border-white/50 outline-none w-24 text-center" onClick={(e) => e.stopPropagation()} />
+                        <input type="text" value={siteSettings.indirme_butonu_metni} onChange={(e) => setSiteSettings({...siteSettings, indirme_butonu_metni: e.target.value})} className="bg-transparent border-b border-dashed border-white/50 outline-none w-20 text-center" onClick={(e) => e.stopPropagation()} />
                       ) : (
                         <span>{siteSettings.indirme_butonu_metni}</span>
                       )}
@@ -515,15 +534,16 @@ export default function App() {
                 )}
               </button>
 
-              <div className="relative overflow-hidden bg-white/10 backdrop-blur-md text-white px-7 py-3.5 rounded-2xl font-bold flex items-center justify-center cursor-default border border-white/20 text-sm">
+              {/* Üye Ol butonu — sabit genişlik */}
+              <div className="relative overflow-hidden bg-white/10 backdrop-blur-md text-white rounded-2xl font-bold flex items-center justify-center cursor-default border border-white/20 text-sm w-[130px] h-[50px]">
                 {isEditMode ? (
-                  <div className="flex flex-col gap-1">
-                    <input type="text" value={siteSettings.hero_buton_metni} onChange={(e) => setSiteSettings({...siteSettings, hero_buton_metni: e.target.value})} className="bg-transparent border-b border-dashed border-white/40 outline-none w-24 text-center text-xs" onClick={(e) => e.stopPropagation()} placeholder="Normal" />
-                    <input type="text" value={siteSettings.hero_buton_metni_alternatif} onChange={(e) => setSiteSettings({...siteSettings, hero_buton_metni_alternatif: e.target.value})} className="bg-transparent border-b border-dashed border-white/40 outline-none w-24 text-center text-xs" onClick={(e) => e.stopPropagation()} placeholder="Alternatif" />
+                  <div className="flex flex-col gap-1 px-3">
+                    <input type="text" value={siteSettings.hero_buton_metni} onChange={(e) => setSiteSettings({...siteSettings, hero_buton_metni: e.target.value})} className="bg-transparent border-b border-dashed border-white/40 outline-none w-full text-center text-xs" onClick={(e) => e.stopPropagation()} placeholder="Normal" />
+                    <input type="text" value={siteSettings.hero_buton_metni_alternatif} onChange={(e) => setSiteSettings({...siteSettings, hero_buton_metni_alternatif: e.target.value})} className="bg-transparent border-b border-dashed border-white/40 outline-none w-full text-center text-xs" onClick={(e) => e.stopPropagation()} placeholder="Alternatif" />
                   </div>
                 ) : (
                   <AnimatePresence mode="wait">
-                    <motion.span key={subscribeBtnText} initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }} transition={{ duration: 0.4, ease: 'easeInOut' }} className="whitespace-nowrap">
+                    <motion.span key={subscribeBtnText} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, ease: 'easeInOut' }} className="whitespace-nowrap absolute">
                       {subscribeBtnText}
                     </motion.span>
                   </AnimatePresence>
