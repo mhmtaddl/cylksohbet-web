@@ -64,12 +64,12 @@ export const LoginModal = ({ onClose }: LoginModalProps) => {
           });
           if (error) throw error;
           
-          // Create profile with pending status
+          // Create profile with is_approved false
           if (data.user) {
             const { error: profileError } = await supabase
               .from('profiles')
               .insert([
-                { id: data.user.id, email: data.user.email, status: 'pending' }
+                { id: data.user.id, email: data.user.email, is_approved: false }
               ]);
             if (profileError) {
               console.error('Profile creation error:', profileError);
@@ -87,21 +87,25 @@ export const LoginModal = ({ onClose }: LoginModalProps) => {
           email,
           password,
         });
-        if (error) throw error;
+        
+        if (error) {
+          throw new Error('Giriş başarısız: E-posta veya şifre hatalı.');
+        }
 
-        // Admin check
-        const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
-        const isAdmin = adminEmail && data.user?.email === adminEmail;
-
-        if (!isAdmin) {
-          // Check profile status for non-admin users
+        if (data.user) {
+          // Check profile approval
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
-            .select('status')
+            .select('is_approved')
             .eq('id', data.user.id)
             .single();
 
-          if (profileError || !profile || profile.status === 'pending') {
+          if (profileError || !profile) {
+            await supabase.auth.signOut();
+            throw new Error('Profil bulunamadı. Lütfen yönetici ile iletişime geçin.');
+          }
+
+          if (profile.is_approved === false) {
             await supabase.auth.signOut();
             throw new Error('Üyelik onayınızı bekliyor. Lütfen yöneticinin onaylamasını bekleyin.');
           }

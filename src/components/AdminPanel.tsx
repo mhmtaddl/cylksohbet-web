@@ -6,7 +6,7 @@ import { supabase } from '../lib/supabase';
 interface Profile {
   id: string;
   email: string;
-  status: 'pending' | 'approved';
+  is_approved: boolean;
   created_at: string;
 }
 
@@ -77,7 +77,7 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps
         });
       }
     } catch (err: any) {
-      if (err.message?.includes('column profiles.status does not exist') || err.message?.includes('relation "profiles" does not exist')) {
+      if (err.message?.includes('column profiles.is_approved does not exist') || err.message?.includes('relation "profiles" does not exist')) {
         setError('yok');
       } else {
         setError(err.message);
@@ -204,11 +204,11 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ status: 'approved' })
+        .update({ is_approved: true })
         .eq('id', userId);
 
       if (error) throw error;
-      setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'approved' } : u));
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_approved: true } : u));
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -285,7 +285,7 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps
               </div>
               <p className="text-on-surface font-bold text-lg">yok</p>
               <p className="text-on-surface/50 text-xs max-w-xs">
-                Veritabanı tablosu veya 'status' sütunu bulunamadı. Lütfen SQL komutlarını çalıştırın.
+                Veritabanı tablosu veya 'is_approved' sütunu bulunamadı. Lütfen SQL komutlarını çalıştırın.
               </p>
             </div>
           ) : error ? (
@@ -472,7 +472,7 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps
                           Admin
                         </span>
                       )}
-                      {user.status === 'pending' ? (
+                      {user.is_approved === false ? (
                         <span className="px-2 py-0.5 bg-warning/10 text-warning text-[10px] font-black uppercase rounded-full border border-warning/20">
                           Beklemede
                         </span>
@@ -494,7 +494,7 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    {user.status === 'pending' && (
+                    {user.is_approved === false && (
                       <button
                         onClick={() => handleApprove(user.id)}
                         disabled={!!actionLoading}
