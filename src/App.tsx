@@ -18,6 +18,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { PiMicrophoneStageFill, PiHeadsetFill, PiSpeakerHighFill } from 'react-icons/pi';
 import { fetchGitHubReleaseData, GitHubReleaseData } from './services/githubService';
 import { fetchDownloadCount, incrementDownloadCount } from './services/downloadStats';
 import { LoginModal } from './components/LoginModal';
@@ -470,14 +471,21 @@ export default function App() {
                   rows={2}
                 />
               ) : (
-                <div className="flex justify-center w-full">
-                  <img
-                    src="/trp1.png"
-                    alt="Çaylaklar ile Sohbete Doğru"
-                    className="w-full max-w-lg h-auto object-contain drop-shadow-2xl"
-                    style={{ filter: 'drop-shadow(0 0 18px rgba(34,211,238,0.3)) drop-shadow(0 4px 24px rgba(0,0,0,0.7))' }}
-                  />
-                </div>
+                <h1 className="font-headline font-black tracking-tight leading-tight drop-shadow-lg text-center">
+                  <span className="block text-3xl md:text-5xl text-white">
+                    Ca<PiHeadsetFill className="inline-block align-middle -mt-1 mx-1 text-violet-400" size={38} />laklar{' '}
+                    <PiMicrophoneStageFill className="inline-block align-middle -mt-1 mx-1 text-blue-400" size={32} />le
+                  </span>
+                  <span className="block text-4xl md:text-6xl">
+                    <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">S</span>
+                    <PiSpeakerHighFill className="inline-block align-middle -mt-1 mx-1 text-blue-400" size={42} />
+                    <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">hbete</span>
+                    {' '}
+                    <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">D</span>
+                    <PiSpeakerHighFill className="inline-block align-middle -mt-1 mx-1 text-cyan-400" size={42} />
+                    <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">ğru</span>
+                  </span>
+                </h1>
               )}
               {isEditMode ? (
                 <textarea
