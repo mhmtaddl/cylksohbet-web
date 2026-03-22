@@ -472,6 +472,34 @@ export default function App() {
               </button>
             </>
           )}
+
+          {/* İlerleme çubukları */}
+          {heroImages.length > 1 && (
+            <div className="absolute -bottom-7 sm:bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2 items-center">
+              {heroImages.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => goHero(idx, idx > heroIndex ? 1 : -1)}
+                  className={`relative h-1.5 rounded-full overflow-hidden transition-all duration-300 ${
+                    idx === heroIndex ? 'w-16' : 'w-1.5 bg-white/40 hover:bg-white/70'
+                  }`}
+                >
+                  {idx === heroIndex && (
+                    <>
+                      <span className="absolute inset-0 bg-white/30 rounded-full" />
+                      <motion.span
+                        key={heroIndex}
+                        className="absolute inset-y-0 left-0 bg-white rounded-full"
+                        initial={{ width: '0%' }}
+                        animate={{ width: '100%' }}
+                        transition={{ duration: 5, ease: 'linear' }}
+                      />
+                    </>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Gradient overlay — alttan yukarı koyulaşır, yazıları okunabilir kılar */}
@@ -661,33 +689,6 @@ export default function App() {
         </div>
 
 
-        {/* İlerleme çubukları */}
-        {heroImages.length > 1 && (
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2 items-center">
-            {heroImages.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => goHero(idx, idx > heroIndex ? 1 : -1)}
-                className={`relative h-1.5 rounded-full overflow-hidden transition-all duration-300 ${
-                  idx === heroIndex ? 'w-16' : 'w-1.5 bg-white/40 hover:bg-white/70'
-                }`}
-              >
-                {idx === heroIndex && (
-                  <>
-                    <span className="absolute inset-0 bg-white/30 rounded-full" />
-                    <motion.span
-                      key={heroIndex}
-                      className="absolute inset-y-0 left-0 bg-white rounded-full"
-                      initial={{ width: '0%' }}
-                      animate={{ width: '100%' }}
-                      transition={{ duration: 5, ease: 'linear' }}
-                    />
-                  </>
-                )}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
 
