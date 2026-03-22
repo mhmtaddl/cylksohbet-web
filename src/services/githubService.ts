@@ -9,7 +9,33 @@ export interface GitHubReleaseData {
   downloadUrl: string | null;
 }
 
+const CACHE_KEY = 'github_release_cache';
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 dakika
+
+function getCachedRelease(): GitHubReleaseData | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { data, timestamp } = JSON.parse(raw);
+    if (Date.now() - timestamp > CACHE_TTL_MS) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedRelease(data: GitHubReleaseData) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+  } catch {
+    // localStorage erişilemiyorsa sessizce geç
+  }
+}
+
 export async function fetchGitHubReleaseData(owner: string, repo: string) {
+  const cached = getCachedRelease();
+  if (cached) return cached;
+
   try {
     const url = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
     console.log('GitHub URL:', url);
@@ -18,7 +44,6 @@ export async function fetchGitHubReleaseData(owner: string, repo: string) {
       headers: {
         Accept: 'application/vnd.github+json',
       },
-      cache: 'no-store',
     });
 
     console.log('GitHub status:', response.status, response.statusText);
@@ -44,11 +69,13 @@ export async function fetchGitHubReleaseData(owner: string, repo: string) {
     console.log('SELECTED INSTALLER download_count:', mainInstaller?.download_count);
     console.log('SELECTED INSTALLER browser_download_url:', mainInstaller?.browser_download_url);
 
-    return {
+    const result = {
       version: latestRelease.tag_name || 'v0.0.0',
       totalDownloads: Number(mainInstaller?.download_count || 0),
       downloadUrl: mainInstaller?.browser_download_url || null,
     };
+    setCachedRelease(result);
+    return result;
   } catch (error) {
     console.error('Error fetching GitHub data:', error);
     return { version: 'v0.0.0', totalDownloads: 0, downloadUrl: null };
