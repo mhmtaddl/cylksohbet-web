@@ -475,7 +475,7 @@ export default function App() {
 
           {/* İlerleme çubukları */}
           {heroImages.length > 1 && (
-            <div className="absolute -bottom-7 sm:bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2 items-center">
+            <div className="absolute bottom-2 sm:bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2 items-center">
               {heroImages.map((_, idx) => (
                 <button
                   key={idx}
