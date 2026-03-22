@@ -440,7 +440,7 @@ export default function App() {
         onMouseLeave={() => setHeroPaused(false)}
       >
         {/* Arka plan görseli + oklar — mobilde nav ile içerik arasında, desktop'ta tam ekran */}
-        <div className="absolute top-20 left-0 right-0 bottom-64 sm:inset-0">
+        <div className="absolute top-20 left-0 right-0 bottom-80 sm:inset-0">
           <AnimatePresence mode="sync" custom={heroDirection}>
             <motion.img
               key={heroIndex}
