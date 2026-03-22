@@ -453,7 +453,7 @@ export default function App() {
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
             src={heroImages[heroIndex] || 'https://picsum.photos/seed/chat-app-v2/1600/900'}
             alt="Hero"
-            className="absolute inset-0 w-full h-full object-contain sm:object-cover"
+            className="absolute top-20 left-0 right-0 bottom-80 w-full h-auto object-contain sm:inset-0 sm:w-full sm:h-full sm:object-cover"
             referrerPolicy="no-referrer"
           />
         </AnimatePresence>
@@ -523,7 +523,7 @@ export default function App() {
                       transition: 'color 700ms ease',
                     }}
                   >
-                    Caylaklar <Mic className="inline-block align-middle -mt-1 mx-0.5" size={26} />le
+                    Caylaklar <Mic className="inline-block align-middle -mt-1 mx-0.5" size={26} />ile
                   </span>
 
                   {/* Sohbete Doğru — açık/koyu tema + çok renkli gradient */}
