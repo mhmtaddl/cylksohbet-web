@@ -426,7 +426,7 @@ export default function App() {
 
       {/* Hero — tam ekran görsel + gradient overlay + içerik */}
       <div
-        className="relative w-full h-screen overflow-hidden"
+        className="relative w-full h-screen overflow-hidden bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(109,40,217,0.35)_0%,rgba(30,10,60,0.7)_50%,#050508_100%)]"
         onMouseEnter={() => setHeroPaused(true)}
         onMouseLeave={() => setHeroPaused(false)}
       >
