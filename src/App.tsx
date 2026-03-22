@@ -474,7 +474,7 @@ export default function App() {
                   <img
                     src="/trp1.png"
                     alt="Çaylaklar ile Sohbete Doğru"
-                    className="h-[120px] md:h-[190px] w-auto object-contain drop-shadow-2xl"
+                    className="w-full max-w-lg h-auto object-contain drop-shadow-2xl"
                     style={{ filter: 'drop-shadow(0 0 18px rgba(34,211,238,0.3)) drop-shadow(0 4px 24px rgba(0,0,0,0.7))' }}
                   />
                 </div>
