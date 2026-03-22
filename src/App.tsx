@@ -10,15 +10,14 @@ import {
   Loader2,
   CheckCircle2,
   LogIn,
+  LogOut,
   User,
   Settings,
   X,
   Check,
   ChevronLeft,
   ChevronRight,
-  Headphones,
   Mic,
-  Volume2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fetchGitHubReleaseData, GitHubReleaseData } from './services/githubService';
@@ -335,36 +334,35 @@ export default function App() {
               />
             </div>
             <span className="font-headline text-2xl font-black tracking-tighter text-white drop-shadow">
-              CYLK <span className="text-white/70">Sohbet</span>
+              CYLK <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">Sohbet</span>
             </span>
           </div>
 
           <div className="flex items-center gap-4">
             {user ? (
-              <div className="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-2xl border border-white/20">
-                <User size={18} className="text-white" />
-                <div className="flex flex-col items-start leading-none">
-                  <span className="text-sm font-bold text-white">
-                    {user.email?.split('@')[0]}
-                  </span>
-                  {user.email === import.meta.env.VITE_ADMIN_EMAIL && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black text-white/70 uppercase tracking-tighter">Admin</span>
-                      <button
-                        onClick={() => setIsAdminPanelOpen(true)}
-                        className="p-1.5 hover:bg-white/10 rounded-lg text-white/80 transition-colors"
-                        title="Yönetici Paneli"
-                      >
-                        <Settings size={16} />
-                      </button>
-                    </div>
-                  )}
-                </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-2xl border border-white/20">
+                <User size={15} className="text-white/70 shrink-0" />
+                <span className="text-sm font-bold text-white">{user.email?.split('@')[0]}</span>
+                {user.email === import.meta.env.VITE_ADMIN_EMAIL && (
+                  <>
+                    <span className="text-white/20 mx-1">|</span>
+                    <button
+                      onClick={() => setIsAdminPanelOpen(true)}
+                      className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors"
+                      title="Yönetici Paneli"
+                    >
+                      <Settings size={14} />
+                      <span className="text-xs font-bold">Ayarlar</span>
+                    </button>
+                  </>
+                )}
+                <span className="text-white/20 mx-1">|</span>
                 <button
                   onClick={() => supabase.auth.signOut()}
-                  className="ml-2 text-xs font-bold text-white/70 hover:text-white hover:underline"
+                  className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors"
                 >
-                  Çıkış
+                  <LogOut size={14} />
+                  <span className="text-xs font-bold">Çıkış</span>
                 </button>
               </div>
             ) : (
@@ -476,17 +474,10 @@ export default function App() {
               ) : (
                 <h1 className="font-headline font-black tracking-tight leading-tight drop-shadow-lg text-center">
                   <span className="block text-3xl md:text-5xl text-white">
-                    Ca<Headphones className="inline-block align-middle -mt-1 mx-0.5 text-white" size={36} />laklar{' '}
-                    <Mic className="inline-block align-middle -mt-1 mx-0.5 text-white" size={30} />le
+                    Caylaklar <Mic className="inline-block align-middle -mt-1 mx-0.5 text-white" size={30} />le
                   </span>
-                  <span className="block text-4xl md:text-6xl">
-                    <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">S</span>
-                    <Volume2 className="inline-block align-middle -mt-1 mx-0.5 text-blue-400" size={40} />
-                    <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">hbete</span>
-                    {' '}
-                    <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">D</span>
-                    <Volume2 className="inline-block align-middle -mt-1 mx-0.5 text-cyan-400" size={40} />
-                    <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">ğru</span>
+                  <span className="block text-4xl md:text-6xl bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                    Sohbete Doğru
                   </span>
                 </h1>
               )}
