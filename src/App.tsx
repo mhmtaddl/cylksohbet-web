@@ -72,6 +72,7 @@ export default function App() {
   const [heroDirection, setHeroDirection] = useState(1);
   const [heroPaused, setHeroPaused] = useState(false);
   const [btnColor, setBtnColor] = useState('rgba(124, 58, 237, 0.92)');
+  const [isLightBg, setIsLightBg] = useState(false);
 
   // Fetch GitHub Release Data + download count
   useEffect(() => {
@@ -186,6 +187,20 @@ export default function App() {
         g = Math.min(255, Math.round(g * factor));
         b = Math.min(255, Math.round(b * factor));
         setBtnColor(`rgba(${r}, ${g}, ${b}, 0.95)`);
+
+        // Tüm görselin ortalama parlaklığını hesapla (arka plan açık mı koyu mu?)
+        const canvas2 = document.createElement('canvas');
+        canvas2.width = 16; canvas2.height = 16;
+        const ctx2 = canvas2.getContext('2d');
+        if (ctx2) {
+          ctx2.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, 16, 16);
+          const d2 = ctx2.getImageData(0, 0, 16, 16).data;
+          let lum = 0;
+          for (let i = 0; i < d2.length; i += 4) {
+            lum += 0.299 * d2[i] + 0.587 * d2[i + 1] + 0.114 * d2[i + 2];
+          }
+          setIsLightBg(lum / (d2.length / 4) > 135);
+        }
       } catch {}
     };
     img.src = src;
@@ -481,7 +496,7 @@ export default function App() {
                 />
               ) : (
                 <h1 className="relative font-headline font-black tracking-tight leading-snug text-center">
-                  {/* Ses seviyesi çubukları — her iki satırın arkasına yayılır */}
+                  {/* Ses seviyesi çubukları — açık/koyu arka plana göre renk değişir */}
                   <span
                     className="absolute inset-x-0 bottom-0 top-0 flex items-end justify-around overflow-hidden pointer-events-none"
                     aria-hidden="true"
@@ -490,17 +505,41 @@ export default function App() {
                       <motion.span
                         key={i}
                         className="rounded-t-sm origin-bottom shrink-0"
-                        style={{ width: 3, height: '100%', backgroundColor: `hsla(${hue}, 75%, 65%, 0.28)` }}
+                        style={{
+                          width: 3,
+                          height: '100%',
+                          backgroundColor: isLightBg
+                            ? `hsla(${hue}, 72%, 28%, 0.55)`
+                            : `hsla(${hue}, 75%, 65%, 0.32)`,
+                          transition: 'background-color 700ms ease',
+                        }}
                         animate={{ scaleY: [0.03, peak, 0.03] }}
                         transition={{ duration, delay, repeat: Infinity, ease: 'easeInOut' }}
                       />
                     ))}
                   </span>
 
-                  <span className="block text-3xl md:text-5xl text-white relative z-10 drop-shadow-lg">
+                  {/* Caylaklar ile — arka plana göre metin rengi */}
+                  <span
+                    className="block text-3xl md:text-5xl relative z-10 drop-shadow-lg"
+                    style={{
+                      color: isLightBg ? '#1e1035' : 'white',
+                      transition: 'color 700ms ease',
+                    }}
+                  >
                     Caylaklar <Mic className="inline-block align-middle -mt-1 mx-0.5" size={26} />le
                   </span>
-                  <span className="block text-4xl md:text-6xl text-white relative z-10 drop-shadow-lg">
+
+                  {/* Sohbete Doğru — açık/koyu tema + çok renkli gradient */}
+                  <span
+                    className="block text-4xl md:text-6xl relative z-10 drop-shadow-lg bg-clip-text text-transparent animate-gradient-x"
+                    style={{
+                      backgroundImage: isLightBg
+                        ? 'linear-gradient(to right, #6d28d9, #7c3aed, #2563eb, #0369a1, #0e7490, #2563eb, #6d28d9)'
+                        : 'linear-gradient(to right, #c084fc, #e879f9, #818cf8, #38bdf8, #22d3ee, #818cf8, #c084fc)',
+                      transition: 'background-image 700ms ease',
+                    }}
+                  >
                     Sohbete Doğru
                   </span>
                 </h1>
