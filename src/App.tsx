@@ -18,6 +18,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Mic,
+  Headphones,
+  Volume2,
+  Gamepad2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fetchGitHubReleaseData, GitHubReleaseData } from './services/githubService';
@@ -537,7 +540,12 @@ export default function App() {
                       transition: 'color 700ms ease',
                     }}
                   >
-                    <Mic size={22} />
+                    <span className="flex items-center gap-3">
+                      <Headphones size={18} />
+                      <Mic size={22} />
+                      <Volume2 size={18} />
+                      <Gamepad2 size={18} />
+                    </span>
                     Caylaklar ile
                   </span>
 
