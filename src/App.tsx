@@ -19,7 +19,6 @@ import {
   ChevronRight,
   Mic,
   Headphones,
-  Volume2,
   Gamepad2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -543,7 +542,6 @@ export default function App() {
                     <span className="flex items-center gap-3">
                       <Headphones size={18} />
                       <Mic size={22} />
-                      <Volume2 size={18} />
                       <Gamepad2 size={18} />
                     </span>
                     Caylaklar ile
