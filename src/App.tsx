@@ -27,6 +27,14 @@ import { AdminPanel } from './components/AdminPanel';
 import { supabase } from './lib/supabase';
 import { getSiteSettings } from './lib/siteSettings';
 
+// Ses seviyesi çubukları — deterministik (Math.random kullanmaz)
+const EQ_BARS = Array.from({ length: 52 }, (_, i) => ({
+  peak: 0.12 + ((i * 13 + 7) % 17) / 17 * 0.82,
+  duration: 0.38 + ((i * 7 + 3) % 9) / 12,
+  delay: ((i * 11 + 5) % 13) / 13 * 0.65,
+  hue: 270 - (i / 52) * 90, // violet→blue→cyan
+}));
+
 // GitHub Repository Configuration
 // Replace with your actual repository owner and name
 const GITHUB_OWNER = 'mhmtaddl';
@@ -472,39 +480,27 @@ export default function App() {
                   rows={2}
                 />
               ) : (
-                <h1 className="font-headline font-black tracking-tight leading-snug drop-shadow-lg text-center">
-                  <span className="block text-3xl md:text-5xl text-white">
-                    Caylaklar{' '}
-                    {/* Mikrofon + arka planda ses sinyal çubukları */}
-                    <span className="relative inline-flex items-center justify-center align-middle -mt-1 mx-1" style={{ width: 32, height: 32 }}>
-                      <span className="absolute inset-0 flex items-end justify-around px-0.5 pb-0.5 gap-px">
-                        {([
-                          { delay: 0,    color: 'rgba(192,132,252,0.55)' },
-                          { delay: 0.18, color: 'rgba(167,139,250,0.55)' },
-                          { delay: 0.05, color: 'rgba(129,140,248,0.55)' },
-                          { delay: 0.25, color: 'rgba(56,189,248,0.55)'  },
-                          { delay: 0.12, color: 'rgba(34,211,238,0.55)'  },
-                        ]).map(({ delay, color }, i) => (
-                          <motion.span
-                            key={i}
-                            className="rounded-full origin-bottom"
-                            style={{ width: 3, height: '100%', backgroundColor: color }}
-                            animate={{ scaleY: [0.1, 0.9, 0.1] }}
-                            transition={{ duration: 0.62 + i * 0.07, delay, repeat: Infinity, ease: 'easeInOut' }}
-                          />
-                        ))}
-                      </span>
-                      <Mic className="text-white relative z-10" size={26} />
-                    </span>
-                    le
-                  </span>
+                <h1 className="relative font-headline font-black tracking-tight leading-snug text-center">
+                  {/* Ses seviyesi çubukları — her iki satırın arkasına yayılır */}
                   <span
-                    className="block text-4xl md:text-6xl bg-clip-text text-transparent animate-gradient-x"
-                    style={{
-                      backgroundImage: 'linear-gradient(to right, #c084fc, #e879f9, #818cf8, #38bdf8, #22d3ee, #818cf8, #c084fc)',
-                      filter: 'drop-shadow(0 0 18px rgba(192,132,252,0.55))',
-                    }}
+                    className="absolute inset-x-0 bottom-0 top-0 flex items-end justify-around overflow-hidden pointer-events-none"
+                    aria-hidden="true"
                   >
+                    {EQ_BARS.map(({ peak, duration, delay, hue }, i) => (
+                      <motion.span
+                        key={i}
+                        className="rounded-t-sm origin-bottom shrink-0"
+                        style={{ width: 3, height: '100%', backgroundColor: `hsla(${hue}, 75%, 65%, 0.28)` }}
+                        animate={{ scaleY: [0.03, peak, 0.03] }}
+                        transition={{ duration, delay, repeat: Infinity, ease: 'easeInOut' }}
+                      />
+                    ))}
+                  </span>
+
+                  <span className="block text-3xl md:text-5xl text-white relative z-10 drop-shadow-lg">
+                    Caylaklar <Mic className="inline-block align-middle -mt-1 mx-0.5" size={26} />le
+                  </span>
+                  <span className="block text-4xl md:text-6xl text-white relative z-10 drop-shadow-lg">
                     Sohbete Doğru
                   </span>
                 </h1>
