@@ -490,7 +490,7 @@ export default function App() {
         {/* İçerik — altta */}
 
         {/* Alt içerik — başlık + açıklama + butonlar */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-20">
+        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-20 sm:pb-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
