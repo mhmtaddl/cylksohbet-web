@@ -531,13 +531,14 @@ export default function App() {
 
                   {/* Caylaklar ile — arka plana göre metin rengi */}
                   <span
-                    className="flex items-center justify-center gap-1.5 text-3xl md:text-5xl relative z-10 drop-shadow-lg"
+                    className="flex flex-col items-center gap-1 text-3xl md:text-5xl relative z-10 drop-shadow-lg"
                     style={{
                       color: isLightBg ? '#1e1035' : 'white',
                       transition: 'color 700ms ease',
                     }}
                   >
-                    Caylaklar <Mic size={26} />le
+                    <Mic size={22} />
+                    Caylaklar ile
                   </span>
 
                   {/* Sohbete Doğru — açık/koyu tema + çok renkli gradient */}
