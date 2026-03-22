@@ -439,38 +439,40 @@ export default function App() {
         onMouseEnter={() => setHeroPaused(true)}
         onMouseLeave={() => setHeroPaused(false)}
       >
-        {/* Arka plan görseli */}
-        <AnimatePresence mode="sync" custom={heroDirection}>
-          <motion.img
-            key={heroIndex}
-            custom={heroDirection}
-            variants={{
-              enter: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0 }),
-              center: { x: 0, opacity: 1 },
-              exit: (dir: number) => ({ x: dir > 0 ? '-100%' : '100%', opacity: 0 }),
-            }}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-            src={heroImages[heroIndex] || 'https://picsum.photos/seed/chat-app-v2/1600/900'}
-            alt="Hero"
-            className="absolute inset-0 w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
-        </AnimatePresence>
+        {/* Arka plan görseli + oklar — mobilde nav ile içerik arasında, desktop'ta tam ekran */}
+        <div className="absolute top-20 left-0 right-0 bottom-80 sm:inset-0">
+          <AnimatePresence mode="sync" custom={heroDirection}>
+            <motion.img
+              key={heroIndex}
+              custom={heroDirection}
+              variants={{
+                enter: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0 }),
+                center: { x: 0, opacity: 1 },
+                exit: (dir: number) => ({ x: dir > 0 ? '-100%' : '100%', opacity: 0 }),
+              }}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
+              src={heroImages[heroIndex] || 'https://picsum.photos/seed/chat-app-v2/1600/900'}
+              alt="Hero"
+              className="absolute inset-0 w-full h-full object-contain sm:object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </AnimatePresence>
 
-        {/* Sol / Sağ oklar */}
-        {heroImages.length > 1 && (
-          <>
-            <button onClick={heroPrev} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-black/25 text-white border border-white/15 hover:bg-black/45 transition-all">
-              <ChevronLeft size={22} />
-            </button>
-            <button onClick={heroNext} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-black/25 text-white border border-white/15 hover:bg-black/45 transition-all">
-              <ChevronRight size={22} />
-            </button>
-          </>
-        )}
+          {/* Sol / Sağ oklar */}
+          {heroImages.length > 1 && (
+            <>
+              <button onClick={heroPrev} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-black/25 text-white border border-white/15 hover:bg-black/45 transition-all">
+                <ChevronLeft size={22} />
+              </button>
+              <button onClick={heroNext} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-black/25 text-white border border-white/15 hover:bg-black/45 transition-all">
+                <ChevronRight size={22} />
+              </button>
+            </>
+          )}
+        </div>
 
         {/* Gradient overlay — alttan yukarı koyulaşır, yazıları okunabilir kılar */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30" />
