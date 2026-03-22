@@ -470,68 +470,13 @@ export default function App() {
                   rows={2}
                 />
               ) : (
-                <div className="flex items-end w-full gap-0 overflow-hidden">
-                  {/* Logo PNG — şeffaf arka plan, ikonlu gradient yazı */}
+                <div className="flex justify-center w-full">
                   <img
                     src="/trp1.png"
                     alt="Çaylaklar ile Sohbete Doğru"
-                    className="h-[110px] md:h-[145px] w-auto object-contain shrink-0"
-                    style={{ filter: 'drop-shadow(0 0 18px rgba(34,211,238,0.35)) drop-shadow(0 4px 24px rgba(0,0,0,0.7))' }}
+                    className="h-[80px] md:h-[130px] w-auto object-contain drop-shadow-2xl"
+                    style={{ filter: 'drop-shadow(0 0 18px rgba(34,211,238,0.3)) drop-shadow(0 4px 24px rgba(0,0,0,0.7))' }}
                   />
-                  {/* Hareketli EKG çizgisi — DOĞRU'dan devam eder */}
-                  <div className="flex-1 min-w-0 overflow-hidden mb-[10px] md:mb-[14px]">
-                    <svg
-                      width="100%"
-                      height="48"
-                      viewBox="0 0 400 48"
-                      preserveAspectRatio="none"
-                    >
-                      {/* Soluk glow için aynı path, kalın ve bulanık */}
-                      <g opacity="0.35">
-                        <animateTransform
-                          attributeName="transform"
-                          type="translate"
-                          from="0 0"
-                          to="-120 0"
-                          dur="1.5s"
-                          repeatCount="indefinite"
-                        />
-                        <path
-                          d="M -120,24 L -80,24 L -76,20 L -73,27 L -69,2 L -65,46 L -61,24 L -53,14 L -45,24 L 0,24 L 40,24 L 44,20 L 47,27 L 51,2 L 55,46 L 59,24 L 67,14 L 75,24 L 120,24 L 160,24 L 164,20 L 167,27 L 171,2 L 175,46 L 179,24 L 187,14 L 195,24 L 240,24 L 280,24 L 284,20 L 287,27 L 291,2 L 295,46 L 299,24 L 307,14 L 315,24 L 360,24 L 400,24 L 404,20 L 407,27 L 411,2 L 415,46 L 419,24 L 427,14 L 435,24 L 480,24 L 520,24 L 524,20 L 527,27 L 531,2 L 535,46 L 539,24 L 547,14 L 555,24 L 600,24 L 640,24 L 644,20 L 647,27 L 651,2 L 655,46 L 659,24 L 667,14 L 675,24 L 720,24"
-                          stroke="#22d3ee"
-                          strokeWidth="8"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          filter="url(#ecg-blur)"
-                        />
-                      </g>
-                      {/* Ana çizgi */}
-                      <g>
-                        <animateTransform
-                          attributeName="transform"
-                          type="translate"
-                          from="0 0"
-                          to="-120 0"
-                          dur="1.5s"
-                          repeatCount="indefinite"
-                        />
-                        <path
-                          d="M -120,24 L -80,24 L -76,20 L -73,27 L -69,2 L -65,46 L -61,24 L -53,14 L -45,24 L 0,24 L 40,24 L 44,20 L 47,27 L 51,2 L 55,46 L 59,24 L 67,14 L 75,24 L 120,24 L 160,24 L 164,20 L 167,27 L 171,2 L 175,46 L 179,24 L 187,14 L 195,24 L 240,24 L 280,24 L 284,20 L 287,27 L 291,2 L 295,46 L 299,24 L 307,14 L 315,24 L 360,24 L 400,24 L 404,20 L 407,27 L 411,2 L 415,46 L 419,24 L 427,14 L 435,24 L 480,24 L 520,24 L 524,20 L 527,27 L 531,2 L 535,46 L 539,24 L 547,14 L 555,24 L 600,24 L 640,24 L 644,20 L 647,27 L 651,2 L 655,46 L 659,24 L 667,14 L 675,24 L 720,24"
-                          stroke="#22d3ee"
-                          strokeWidth="2.5"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </g>
-                      <defs>
-                        <filter id="ecg-blur" x="-20%" y="-100%" width="140%" height="300%">
-                          <feGaussianBlur stdDeviation="4" />
-                        </filter>
-                      </defs>
-                    </svg>
-                  </div>
                 </div>
               )}
               {isEditMode ? (
