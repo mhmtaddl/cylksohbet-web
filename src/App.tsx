@@ -533,7 +533,7 @@ export default function App() {
 
                   {/* Caylaklar ile — arka plana göre metin rengi */}
                   <span
-                    className="flex flex-col items-center gap-1 text-3xl md:text-5xl relative z-10 drop-shadow-lg"
+                    className="flex flex-col items-center gap-1 text-3xl md:text-5xl relative z-10 drop-shadow-lg max-sm:text-white!"
                     style={{
                       color: isLightBg ? '#1e1035' : 'white',
                       transition: 'color 700ms ease',
