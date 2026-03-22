@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fetchGitHubReleaseData, GitHubReleaseData } from './services/githubService';
-import { fetchDownloadCount, incrementDownloadCount } from './services/downloadStats';
+import { incrementDownloadCount } from './services/downloadStats';
 import { LoginModal } from './components/LoginModal';
 import { AdminPanel } from './components/AdminPanel';
 import { supabase } from './lib/supabase';
@@ -65,9 +65,9 @@ export default function App() {
   const [releaseData, setReleaseData] = useState<GitHubReleaseData>({
     version: 'v0.0.0',
     totalDownloads: 0,
-    downloadUrl: null
+    downloadUrl: null,
+    publishedAt: null,
   });
-  const [downloadCount, setDownloadCount] = useState(0);
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroDirection, setHeroDirection] = useState(1);
   const [heroPaused, setHeroPaused] = useState(false);
@@ -80,12 +80,7 @@ export default function App() {
       const data = await fetchGitHubReleaseData(GITHUB_OWNER, GITHUB_REPO);
       setReleaseData(data);
     }
-    async function getDownloadCount() {
-      const count = await fetchDownloadCount();
-      setDownloadCount(count);
-    }
     getReleaseData();
-    getDownloadCount();
 
     // Fetch site settings
     const fetchSettings = async () => {
@@ -206,14 +201,6 @@ export default function App() {
     img.src = src;
   }, [heroIndex, heroImages]);
 
-  const formatDownloadCount = (count: number) => {
-    if (count >= 1000000) {
-      return (count / 1000000).toFixed(1) + 'M+';
-    } else if (count >= 1000) {
-      return (count / 1000).toFixed(1) + 'K+';
-    }
-    return count.toString();
-  };
 
   const handleDownload = async (e: React.MouseEvent) => {
     if (isDownloading || !releaseData.downloadUrl) return;
@@ -221,7 +208,6 @@ export default function App() {
     setIsDownloading(true);
 
     await incrementDownloadCount();
-    setDownloadCount(prev => prev + 1);
 
     window.open(releaseData.downloadUrl!, '_blank');
 
@@ -570,14 +556,18 @@ export default function App() {
 
             {/* Versiyon + indirme + butonlar — ortalı */}
             <div className="flex flex-col items-center gap-3">
-              <div className="flex gap-3">
+              <div className="flex flex-col items-center gap-1">
                 <span className="inline-flex items-center gap-1.5 text-white/55 text-xs font-semibold">
                   <Rocket size={11} className="text-white/35" /> {releaseData.version}
                 </span>
-                <span className="text-white/25">·</span>
-                <span className="inline-flex items-center gap-1.5 text-white/55 text-xs font-semibold">
-                  <Download size={11} className="text-white/35" /> {formatDownloadCount(downloadCount)} İndirme
-                </span>
+                {releaseData.publishedAt && (
+                  <span className="text-white/35 text-[11px]">
+                    {new Date(releaseData.publishedAt).toLocaleString('tr-TR', {
+                      day: '2-digit', month: '2-digit', year: 'numeric',
+                      hour: '2-digit', minute: '2-digit',
+                    })}
+                  </span>
+                )}
               </div>
             <div className="flex flex-row gap-3">
               {/* İndir butonu — görselden renk alır */}

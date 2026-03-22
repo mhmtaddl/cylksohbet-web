@@ -7,6 +7,7 @@ export interface GitHubReleaseData {
   version: string;
   totalDownloads: number;
   downloadUrl: string | null;
+  publishedAt: string | null;
 }
 
 const CACHE_KEY = 'github_release_cache';
@@ -73,11 +74,12 @@ export async function fetchGitHubReleaseData(owner: string, repo: string) {
       version: latestRelease.tag_name || 'v0.0.0',
       totalDownloads: Number(mainInstaller?.download_count || 0),
       downloadUrl: mainInstaller?.browser_download_url || null,
+      publishedAt: latestRelease.published_at || null,
     };
     setCachedRelease(result);
     return result;
   } catch (error) {
     console.error('Error fetching GitHub data:', error);
-    return { version: 'v0.0.0', totalDownloads: 0, downloadUrl: null };
+    return { version: 'v0.0.0', totalDownloads: 0, downloadUrl: null, publishedAt: null };
   }
 }
