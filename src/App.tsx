@@ -498,7 +498,7 @@ export default function App() {
             className="max-w-5xl mx-auto flex flex-col items-center gap-6 text-center"
           >
             {/* Başlık + açıklama */}
-            <div className="space-y-2 w-full">
+            <div className="space-y-8 w-full">
               {isEditMode ? (
                 <textarea
                   value={siteSettings.hero_baslik}
