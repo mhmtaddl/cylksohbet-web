@@ -475,6 +475,16 @@ export default function App() {
         {/* Gradient overlay — alttan yukarı koyulaşır, yazıları okunabilir kılar */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30" />
 
+        {/* Film grain texture */}
+        <div
+          className="absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            opacity: 0.045,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat',
+          }}
+        />
+
         {/* İçerik — altta */}
 
         {/* Alt içerik — başlık + açıklama + butonlar */}
@@ -571,6 +581,20 @@ export default function App() {
               </div>
             <div className="flex flex-row gap-3">
               {/* İndir butonu — görselden renk alır */}
+              <div className="relative">
+                {/* Pulse glow ring */}
+                {!downloadComplete && !isDownloading && (
+                  <motion.span
+                    className="absolute inset-0 rounded-2xl pointer-events-none"
+                    animate={{
+                      boxShadow: [
+                        `0 0 0 0px ${btnColor.replace('0.95', '0.7').replace('0.92', '0.7')}`,
+                        `0 0 0 12px ${btnColor.replace('0.95', '0').replace('0.92', '0')}`,
+                      ],
+                    }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+                  />
+                )}
               <button
                 onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e); }}
                 disabled={isDownloading && !isEditMode}
@@ -603,6 +627,7 @@ export default function App() {
                   <motion.div initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 h-0.5 bg-white/40" />
                 )}
               </button>
+              </div>
 
               {/* Üye Ol butonu — sabit genişlik */}
               <div className="relative overflow-hidden bg-white/10 backdrop-blur-md text-white rounded-2xl font-bold flex items-center justify-center cursor-default border border-white/20 text-sm w-[130px] h-[50px]">
@@ -636,15 +661,30 @@ export default function App() {
           </>
         )}
 
-        {/* Nokta göstergeleri */}
+        {/* İlerleme çubukları */}
         {heroImages.length > 1 && (
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2 items-center">
             {heroImages.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => goHero(idx, idx > heroIndex ? 1 : -1)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${idx === heroIndex ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/70'}`}
-              />
+                className={`relative h-1.5 rounded-full overflow-hidden transition-all duration-300 ${
+                  idx === heroIndex ? 'w-16' : 'w-1.5 bg-white/40 hover:bg-white/70'
+                }`}
+              >
+                {idx === heroIndex && (
+                  <>
+                    <span className="absolute inset-0 bg-white/30 rounded-full" />
+                    <motion.span
+                      key={heroIndex}
+                      className="absolute inset-y-0 left-0 bg-white rounded-full"
+                      initial={{ width: '0%' }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: 5, ease: 'linear' }}
+                    />
+                  </>
+                )}
+              </button>
             ))}
           </div>
         )}
