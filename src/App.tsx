@@ -53,7 +53,7 @@ export default function App() {
     logo_url: '',
     hero_baslik: 'Caylaklar ile Sohbete Doğru',
     hero_aciklama: 'Güvenli ve hızlı bağlantı sunan modern bir sesli sohbet uygulamasıdır. VPN derdine son veren kesintisiz iletişim altyapısı.',
-    hero_gorseller: ['https://picsum.photos/seed/chat-app-v2/1000/800'],
+    hero_gorseller: [],
     navigasyon_butonu_metni: 'Giriş Yap',
     hero_buton_metni: 'Abone Ol',
     hero_buton_metni_alternatif: 'Yakında..',
@@ -331,18 +331,14 @@ export default function App() {
         <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 overflow-hidden rounded-2xl shadow-xl shadow-primary/20 border-2 border-primary/20 bg-surface-container-low">
-              <img 
-                src={siteSettings.logo_url 
-                  ? `${siteSettings.logo_url}${siteSettings.logo_url.includes('?') ? '&' : '?'}t=${siteSettings.updated_at || Date.now()}` 
-                  : 'https://picsum.photos/seed/cylk-logo-v2/200/200'
-                } 
-                alt="CYLK Logo" 
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/cylk-logo-v2/200/200';
-                }}
-              />
+              {!isSettingsLoading && siteSettings.logo_url && (
+                <img
+                  src={`${siteSettings.logo_url}${siteSettings.logo_url.includes('?') ? '&' : '?'}t=${siteSettings.updated_at || Date.now()}`}
+                  alt="CYLK Logo"
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              )}
             </div>
             <span className="font-headline text-2xl font-black tracking-tighter text-white drop-shadow">
               CYLK <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">Sohbet</span>
@@ -440,7 +436,7 @@ export default function App() {
         onMouseLeave={() => setHeroPaused(false)}
       >
         {/* Arka plan görseli + oklar — mobilde nav ile içerik arasında, desktop'ta tam ekran */}
-        <div className="absolute top-20 left-0 right-0 bottom-80 sm:inset-0">
+        <div className={`absolute top-20 left-0 right-0 bottom-80 sm:inset-0 transition-opacity duration-500 ${isSettingsLoading ? 'opacity-0' : 'opacity-100'}`}>
           <AnimatePresence mode="sync" custom={heroDirection}>
             <motion.img
               key={heroIndex}
