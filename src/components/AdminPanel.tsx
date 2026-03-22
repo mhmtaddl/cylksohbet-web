@@ -27,9 +27,10 @@ interface AdminPanelProps {
   onClose: () => void;
   onSave?: () => void;
   onStartEditMode?: () => void;
+  btnColor?: string;
 }
 
-export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps) => {
+export const AdminPanel = ({ onClose, onSave, onStartEditMode, btnColor = 'rgba(124, 58, 237, 0.92)' }: AdminPanelProps) => {
   const [users, setUsers] = useState<Profile[]>([]);
   const [settings, setSettings] = useState<SiteSettings>({
     logo_url: 'https://picsum.photos/seed/cylk-logo-v2/200/200',
@@ -232,7 +233,7 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps
 
   return (
     <div 
-      className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-surface-container-lowest/40 backdrop-blur-sm"
+      className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/50 backdrop-blur-md"
       onClick={onClose}
     >
       <motion.div
@@ -240,9 +241,9 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode }: AdminPanelProps
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-5xl bg-surface-container-lowest border border-outline-variant/20 rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col max-h-[85vh]"
+        className="w-full max-w-5xl bg-black/60 backdrop-blur-xl border border-white/15 rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col max-h-[85vh]"
       >
-        <div className="p-8 border-b border-outline-variant/10 flex items-center justify-between bg-surface-container-low">
+        <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/5">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-primary/10 rounded-2xl text-primary">
               <Shield size={24} />
