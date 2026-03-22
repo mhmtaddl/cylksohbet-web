@@ -455,7 +455,7 @@ export default function App() {
         {/* İçerik — altta */}
 
         {/* Alt içerik — başlık + açıklama + butonlar */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-10">
+        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -472,11 +472,39 @@ export default function App() {
                   rows={2}
                 />
               ) : (
-                <h1 className="font-headline font-black tracking-tight leading-tight drop-shadow-lg text-center">
+                <h1 className="font-headline font-black tracking-tight leading-snug drop-shadow-lg text-center">
                   <span className="block text-3xl md:text-5xl text-white">
-                    Caylaklar <Mic className="inline-block align-middle -mt-1 mx-0.5 text-white" size={30} />le
+                    Caylaklar{' '}
+                    {/* Mikrofon + arka planda ses sinyal çubukları */}
+                    <span className="relative inline-flex items-center justify-center align-middle -mt-1 mx-1" style={{ width: 32, height: 32 }}>
+                      <span className="absolute inset-0 flex items-end justify-around px-0.5 pb-0.5 gap-px">
+                        {([
+                          { delay: 0,    color: 'rgba(192,132,252,0.55)' },
+                          { delay: 0.18, color: 'rgba(167,139,250,0.55)' },
+                          { delay: 0.05, color: 'rgba(129,140,248,0.55)' },
+                          { delay: 0.25, color: 'rgba(56,189,248,0.55)'  },
+                          { delay: 0.12, color: 'rgba(34,211,238,0.55)'  },
+                        ]).map(({ delay, color }, i) => (
+                          <motion.span
+                            key={i}
+                            className="rounded-full origin-bottom"
+                            style={{ width: 3, height: '100%', backgroundColor: color }}
+                            animate={{ scaleY: [0.1, 0.9, 0.1] }}
+                            transition={{ duration: 0.62 + i * 0.07, delay, repeat: Infinity, ease: 'easeInOut' }}
+                          />
+                        ))}
+                      </span>
+                      <Mic className="text-white relative z-10" size={26} />
+                    </span>
+                    le
                   </span>
-                  <span className="block text-4xl md:text-6xl bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  <span
+                    className="block text-4xl md:text-6xl bg-clip-text text-transparent animate-gradient-x"
+                    style={{
+                      backgroundImage: 'linear-gradient(to right, #c084fc, #e879f9, #818cf8, #38bdf8, #22d3ee, #818cf8, #c084fc)',
+                      filter: 'drop-shadow(0 0 18px rgba(192,132,252,0.55))',
+                    }}
+                  >
                     Sohbete Doğru
                   </span>
                 </h1>
