@@ -462,10 +462,10 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
-            className="max-w-5xl mx-auto flex flex-col md:flex-row items-end justify-between gap-6"
+            className="max-w-5xl mx-auto flex flex-col items-center gap-6 text-center"
           >
-            {/* Sol — başlık + açıklama */}
-            <div className="space-y-2 flex-1">
+            {/* Başlık + açıklama */}
+            <div className="space-y-2 w-full">
               {isEditMode ? (
                 <textarea
                   value={siteSettings.hero_baslik}
@@ -474,7 +474,7 @@ export default function App() {
                   rows={2}
                 />
               ) : (
-                <h1 className="font-headline font-black tracking-tight leading-tight drop-shadow-lg">
+                <h1 className="font-headline font-black tracking-tight leading-tight drop-shadow-lg text-center">
                   {/* Satır 1: Caylaklar ile — beyaz */}
                   <span className="block text-3xl md:text-5xl text-white">
                     Ca<Headphones className="inline-block align-middle -mt-1 mx-0.5 text-white" size={36} />laklar{' '}
@@ -508,22 +508,21 @@ export default function App() {
                   rows={3}
                 />
               ) : (
-                <p className="text-white/65 text-sm leading-relaxed max-w-lg drop-shadow">
+                <p className="text-white/65 text-sm leading-relaxed max-w-lg drop-shadow mx-auto">
                   {siteSettings.hero_aciklama}
                 </p>
               )}
             </div>
 
-            {/* Sağ — versiyon + indirme + butonlar */}
-            <div className="flex flex-col gap-3 shrink-0 items-end">
-              {/* Versiyon ve indirme sayısı */}
+            {/* Versiyon + indirme + butonlar — ortalı */}
+            <div className="flex flex-col items-center gap-3">
               <div className="flex gap-3">
-                <span className="inline-flex items-center gap-1.5 text-white/60 text-xs font-semibold">
-                  <Rocket size={11} className="text-white/40" /> {releaseData.version}
+                <span className="inline-flex items-center gap-1.5 text-white/55 text-xs font-semibold">
+                  <Rocket size={11} className="text-white/35" /> {releaseData.version}
                 </span>
-                <span className="text-white/30">·</span>
-                <span className="inline-flex items-center gap-1.5 text-white/60 text-xs font-semibold">
-                  <Download size={11} className="text-white/40" /> {formatDownloadCount(downloadCount)} İndirme
+                <span className="text-white/25">·</span>
+                <span className="inline-flex items-center gap-1.5 text-white/55 text-xs font-semibold">
+                  <Download size={11} className="text-white/35" /> {formatDownloadCount(downloadCount)} İndirme
                 </span>
               </div>
             <div className="flex flex-row gap-3">
