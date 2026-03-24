@@ -27,7 +27,7 @@ import { incrementDownloadCount } from './services/downloadStats';
 import { LoginModal } from './components/LoginModal';
 import { AdminPanel } from './components/AdminPanel';
 import { supabase } from './lib/supabase';
-import { getSiteSettings } from './lib/siteSettings';
+import { getSiteSettings, sanitizeHeroImages } from './lib/siteSettings';
 
 // Ses seviyesi çubukları — deterministik (Math.random kullanmaz)
 const EQ_BARS = Array.from({ length: 52 }, (_, i) => ({
@@ -94,7 +94,7 @@ export default function App() {
           logo_url: data.logo_url || '',
           hero_baslik: data.hero_baslik,
           hero_aciklama: data.hero_aciklama,
-          hero_gorseller: data.hero_gorseller || [],
+          hero_gorseller: sanitizeHeroImages(data.hero_gorseller),
           navigasyon_butonu_metni: data.navigasyon_butonu_metni || (data as any).nav_buton_metni || 'Giriş Yap',
           hero_buton_metni: data.hero_buton_metni || 'Abone Ol',
           hero_buton_metni_alternatif: data.hero_buton_metni_alternatif || (data as any).hero_buton_metni_alt || 'Yakında..',
@@ -132,7 +132,7 @@ export default function App() {
     document.documentElement.classList.add('dark');
   }, []);
 
-  const heroImages = siteSettings.hero_gorseller;
+  const heroImages = sanitizeHeroImages(siteSettings.hero_gorseller);
 
   const goHero = useCallback((index: number, dir: number) => {
     setHeroDirection(dir);
@@ -414,7 +414,7 @@ export default function App() {
                     logo_url: data.logo_url || '',
                     hero_baslik: data.hero_baslik,
                     hero_aciklama: data.hero_aciklama,
-                    hero_gorseller: data.hero_gorseller || [],
+                    hero_gorseller: sanitizeHeroImages(data.hero_gorseller),
                     navigasyon_butonu_metni: data.navigasyon_butonu_metni || (data as any).nav_buton_metni || 'Giriş Yap',
                     hero_buton_metni: data.hero_buton_metni || 'Abone Ol',
                     hero_buton_metni_alternatif: data.hero_buton_metni_alternatif || (data as any).hero_buton_metni_alt || 'Yakında..',
@@ -437,6 +437,7 @@ export default function App() {
       >
         {/* Arka plan görseli + oklar — mobilde nav ile içerik arasında, desktop'ta tam ekran */}
         <div className={`absolute top-20 left-0 right-0 bottom-80 sm:inset-0 transition-opacity duration-500 ${isSettingsLoading ? 'opacity-0' : 'opacity-100'}`}>
+          {!isSettingsLoading && heroImages.length > 0 && (
           <AnimatePresence mode="sync" custom={heroDirection}>
             <motion.img
               key={heroIndex}
@@ -450,12 +451,13 @@ export default function App() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-              src={heroImages[heroIndex] || 'https://picsum.photos/seed/chat-app-v2/1600/900'}
+              src={heroImages[heroIndex]}
               alt="Hero"
               className="absolute inset-0 w-full h-full object-contain sm:object-cover"
               referrerPolicy="no-referrer"
             />
           </AnimatePresence>
+          )}
 
           {/* Sol / Sağ oklar */}
           {heroImages.length > 1 && (

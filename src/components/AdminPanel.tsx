@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Check, Trash2, Loader2, AlertCircle, UserCheck, Shield, Upload, Image as ImageIcon, KeyRound, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '../lib/supabase';
+import { sanitizeHeroImages } from '../lib/siteSettings';
 
 interface Profile {
   id: string;
@@ -74,7 +75,7 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode, btnColor = 'rgba(
           logo_url: settingsRes.data.logo_url,
           hero_baslik: settingsRes.data.hero_baslik,
           hero_aciklama: settingsRes.data.hero_aciklama,
-          hero_gorseller: settingsRes.data.hero_gorseller || [],
+          hero_gorseller: sanitizeHeroImages(settingsRes.data.hero_gorseller),
           navigasyon_butonu_metni: settingsRes.data.navigasyon_butonu_metni || settingsRes.data.nav_buton_metni || 'Giriş Yap',
           hero_buton_metni: settingsRes.data.hero_buton_metni || 'Abone Ol',
           hero_buton_metni_alternatif: settingsRes.data.hero_buton_metni_alternatif || settingsRes.data.hero_buton_metni_alt || 'Yakında..',
@@ -96,7 +97,7 @@ export const AdminPanel = ({ onClose, onSave, onStartEditMode, btnColor = 'rgba(
         logo_url: settings.logo_url,
         hero_baslik: settings.hero_baslik,
         hero_aciklama: settings.hero_aciklama,
-        hero_gorseller: settings.hero_gorseller,
+        hero_gorseller: sanitizeHeroImages(settings.hero_gorseller),
         navigasyon_butonu_metni: settings.navigasyon_butonu_metni,
         hero_buton_metni: settings.hero_buton_metni,
         hero_buton_metni_alternatif: settings.hero_buton_metni_alternatif,

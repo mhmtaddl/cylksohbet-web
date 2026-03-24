@@ -1,5 +1,29 @@
 import { supabase } from './supabase';
 
+// Bilinen istenmeyen görsel URL kalıpları (araba fotoğrafı vb.)
+const BLOCKED_IMAGE_PATTERNS = [
+  'picsum.photos',
+];
+
+/**
+ * Hero görsel listesini temizler:
+ * - Boş stringleri kaldırır
+ * - Duplicate URL'leri kaldırır
+ * - Engellenen URL kalıplarını filtreler
+ */
+export function sanitizeHeroImages(images: string[] | null | undefined): string[] {
+  if (!images || !Array.isArray(images)) return [];
+  const seen = new Set<string>();
+  return images.filter((url) => {
+    if (!url || typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    if (!trimmed) return false;
+    if (seen.has(trimmed)) return false;
+    seen.add(trimmed);
+    return !BLOCKED_IMAGE_PATTERNS.some((pattern) => trimmed.includes(pattern));
+  });
+}
+
 export interface SiteSettings {
   id: string;
   logo_url: string;
