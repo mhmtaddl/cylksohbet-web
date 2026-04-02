@@ -603,7 +603,7 @@ export default function App() {
                   </span>
                 )}
               </div>
-            <div className="flex flex-row gap-3">
+            <div className="flex flex-row gap-2.5">
               {/* Windows İndir butonu */}
               {releaseData.downloadUrl && (
               <div className="relative">
@@ -613,7 +613,7 @@ export default function App() {
                     animate={{
                       boxShadow: [
                         `0 0 0 0px ${btnColor.replace('0.95', '0.7').replace('0.92', '0.7')}`,
-                        `0 0 0 12px ${btnColor.replace('0.95', '0').replace('0.92', '0')}`,
+                        `0 0 0 10px ${btnColor.replace('0.95', '0').replace('0.92', '0')}`,
                       ],
                     }}
                     transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
@@ -623,28 +623,28 @@ export default function App() {
                 onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e, 'windows'); }}
                 disabled={!!downloadingPlatform && !isEditMode}
                 style={completePlatform === 'windows' ? {} : { backgroundColor: btnColor }}
-                className={`group relative overflow-hidden px-5 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-colors active:scale-95 text-sm shadow-2xl text-white min-w-[160px] ${
-                  completePlatform === 'windows' ? 'bg-emerald-500' : 'hover:brightness-110'
+                className={`group relative overflow-hidden w-[52px] h-[52px] rounded-2xl font-bold flex items-center justify-center transition-all active:scale-95 shadow-2xl text-white ${
+                  completePlatform === 'windows' ? 'bg-emerald-500' : 'hover:brightness-110 hover:scale-105'
                 } disabled:opacity-90 disabled:cursor-wait`}
+                title="Windows İndir"
               >
                 <AnimatePresence mode="wait">
                   {downloadingPlatform === 'windows' ? (
-                    <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                      <Loader2 className="animate-spin" size={16} /><span>İndiriliyor...</span>
+                    <motion.div key="loading" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}>
+                      <Loader2 className="animate-spin" size={24} />
                     </motion.div>
                   ) : completePlatform === 'windows' ? (
-                    <motion.div key="complete" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                      <CheckCircle2 size={16} /><span>Başlatıldı!</span>
+                    <motion.div key="complete" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}>
+                      <CheckCircle2 size={24} />
                     </motion.div>
                   ) : (
-                    <motion.div key="default" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
-                      <span>Windows</span>
+                    <motion.div key="default" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
                     </motion.div>
                   )}
                 </AnimatePresence>
                 {downloadingPlatform === 'windows' && (
-                  <motion.div initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 h-0.5 bg-white/40" />
+                  <motion.div initial={{ height: '0%' }} animate={{ height: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 w-full bg-white/15 rounded-2xl" />
                 )}
               </button>
               </div>
@@ -657,28 +657,28 @@ export default function App() {
                 onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e, 'android'); }}
                 disabled={!!downloadingPlatform && !isEditMode}
                 style={completePlatform === 'android' ? {} : { backgroundColor: btnColor }}
-                className={`group relative overflow-hidden px-5 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-colors active:scale-95 text-sm shadow-2xl text-white min-w-[160px] ${
-                  completePlatform === 'android' ? 'bg-emerald-500' : 'hover:brightness-110'
+                className={`group relative overflow-hidden w-[52px] h-[52px] rounded-2xl font-bold flex items-center justify-center transition-all active:scale-95 shadow-2xl text-white ${
+                  completePlatform === 'android' ? 'bg-emerald-500' : 'hover:brightness-110 hover:scale-105'
                 } disabled:opacity-90 disabled:cursor-wait`}
+                title="Android İndir"
               >
                 <AnimatePresence mode="wait">
                   {downloadingPlatform === 'android' ? (
-                    <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                      <Loader2 className="animate-spin" size={16} /><span>İndiriliyor...</span>
+                    <motion.div key="loading" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}>
+                      <Loader2 className="animate-spin" size={24} />
                     </motion.div>
                   ) : completePlatform === 'android' ? (
-                    <motion.div key="complete" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                      <CheckCircle2 size={16} /><span>Başlatıldı!</span>
+                    <motion.div key="complete" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}>
+                      <CheckCircle2 size={24} />
                     </motion.div>
                   ) : (
-                    <motion.div key="default" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.341a.96.96 0 0 0 .953-.957.96.96 0 0 0-.953-.958.96.96 0 0 0-.953.958.96.96 0 0 0 .953.957m-11.046 0a.96.96 0 0 0 .953-.957.96.96 0 0 0-.953-.958.96.96 0 0 0-.953.958.96.96 0 0 0 .953.957m11.4-6.243 2.006-3.475a.418.418 0 0 0-.152-.57.418.418 0 0 0-.57.153l-2.033 3.522A12.2 12.2 0 0 0 12 7.594c-1.8 0-3.502.398-5.128 1.134L4.84 5.206a.418.418 0 0 0-.57-.153.418.418 0 0 0-.153.57l2.006 3.475C2.69 11.266.343 14.778 0 18.916h24c-.344-4.138-2.69-7.65-6.123-9.818"/></svg>
-                      <span>Android</span>
+                    <motion.div key="default" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}>
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V7H6v11zM3.5 7C2.67 7 2 7.67 2 8.5v7c0 .83.67 1.5 1.5 1.5S5 16.33 5 15.5v-7C5 7.67 4.33 7 3.5 7zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0 0 12 0c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31A5.983 5.983 0 0 0 6 6h12c0-2.21-1.2-4.15-2.97-5.18-.14-.09-.19-.17-.5.16zM10 4H9V3h1v1zm5 0h-1V3h1v1z"/></svg>
                     </motion.div>
                   )}
                 </AnimatePresence>
                 {downloadingPlatform === 'android' && (
-                  <motion.div initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 h-0.5 bg-white/40" />
+                  <motion.div initial={{ height: '0%' }} animate={{ height: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 w-full bg-white/15 rounded-2xl" />
                 )}
               </button>
               </div>
