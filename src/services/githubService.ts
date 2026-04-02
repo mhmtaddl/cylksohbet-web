@@ -7,6 +7,7 @@ export interface GitHubReleaseData {
   version: string;
   totalDownloads: number;
   downloadUrl: string | null;
+  androidDownloadUrl: string | null;
   publishedAt: string | null;
 }
 
@@ -66,20 +67,27 @@ export async function fetchGitHubReleaseData(owner: string, repo: string) {
       return name.endsWith('.exe') && !name.includes('blockmap');
     });
 
+    const androidInstaller = assets.find((asset: any) => {
+      const name = String(asset.name || '').toLowerCase();
+      return name.endsWith('.apk');
+    });
+
     console.log('SELECTED INSTALLER name:', mainInstaller?.name);
     console.log('SELECTED INSTALLER download_count:', mainInstaller?.download_count);
     console.log('SELECTED INSTALLER browser_download_url:', mainInstaller?.browser_download_url);
+    console.log('ANDROID INSTALLER name:', androidInstaller?.name);
 
     const result = {
       version: latestRelease.tag_name || 'v0.0.0',
       totalDownloads: Number(mainInstaller?.download_count || 0),
       downloadUrl: mainInstaller?.browser_download_url || null,
+      androidDownloadUrl: androidInstaller?.browser_download_url || null,
       publishedAt: latestRelease.published_at || null,
     };
     setCachedRelease(result);
     return result;
   } catch (error) {
     console.error('Error fetching GitHub data:', error);
-    return { version: 'v0.0.0', totalDownloads: 0, downloadUrl: null, publishedAt: null };
+    return { version: 'v0.0.0', totalDownloads: 0, downloadUrl: null, androidDownloadUrl: null, publishedAt: null };
   }
 }

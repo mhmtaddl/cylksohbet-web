@@ -5,11 +5,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Download,
   Rocket,
   Loader2,
   CheckCircle2,
-  LogIn,
   LogOut,
   User,
   Settings,
@@ -62,12 +60,13 @@ export default function App() {
   });
   const [user, setUser] = useState<any>(null);
   const [subscribeBtnText, setSubscribeBtnText] = useState('Abone Ol');
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadComplete, setDownloadComplete] = useState(false);
+  const [downloadingPlatform, setDownloadingPlatform] = useState<'windows' | 'android' | null>(null);
+  const [completePlatform, setCompletePlatform] = useState<'windows' | 'android' | null>(null);
   const [releaseData, setReleaseData] = useState<GitHubReleaseData>({
     version: 'v0.0.0',
     totalDownloads: 0,
     downloadUrl: null,
+    androidDownloadUrl: null,
     publishedAt: null,
   });
   const [heroIndex, setHeroIndex] = useState(0);
@@ -204,19 +203,20 @@ export default function App() {
   }, [heroIndex, heroImages]);
 
 
-  const handleDownload = async (e: React.MouseEvent) => {
-    if (isDownloading || !releaseData.downloadUrl) return;
+  const handleDownload = async (e: React.MouseEvent, platform: 'windows' | 'android') => {
+    const url = platform === 'windows' ? releaseData.downloadUrl : releaseData.androidDownloadUrl;
+    if (downloadingPlatform || !url) return;
 
-    setIsDownloading(true);
+    setDownloadingPlatform(platform);
 
     await incrementDownloadCount();
 
-    window.open(releaseData.downloadUrl!, '_blank');
+    window.open(url, '_blank');
 
     setTimeout(() => {
-      setIsDownloading(false);
-      setDownloadComplete(true);
-      setTimeout(() => setDownloadComplete(false), 5000);
+      setDownloadingPlatform(null);
+      setCompletePlatform(platform);
+      setTimeout(() => setCompletePlatform(null), 5000);
     }, 3000);
   };
 
@@ -330,7 +330,11 @@ export default function App() {
       <nav className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-md border-b border-white/10">
         <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 overflow-hidden rounded-2xl shadow-xl shadow-primary/20 border-2 border-primary/20 bg-surface-container-low">
+            <div
+              onClick={() => { if (!user) setIsLoginOpen(true); }}
+              className={`w-12 h-12 overflow-hidden rounded-2xl shadow-xl shadow-primary/20 border-2 border-primary/20 bg-surface-container-low ${!user ? 'cursor-pointer hover:scale-105 hover:border-primary/50 transition-all' : ''}`}
+              title={!user ? 'Giriş Yap' : undefined}
+            >
               {!isSettingsLoading && siteSettings.logo_url && (
                 <img
                   src={`${siteSettings.logo_url}${siteSettings.logo_url.includes('?') ? '&' : '?'}t=${siteSettings.updated_at || Date.now()}`}
@@ -372,24 +376,7 @@ export default function App() {
                   <span className="text-xs font-bold">Çıkış</span>
                 </button>
               </div>
-            ) : (
-              isEditMode ? (
-                <input 
-                  type="text"
-                  value={siteSettings.navigasyon_butonu_metni}
-                  onChange={(e) => setSiteSettings({...siteSettings, navigasyon_butonu_metni: e.target.value})}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary rounded-2xl font-bold shadow-lg shadow-primary/20 outline-none border-2 border-dashed border-white/50 focus:border-white w-32 text-center"
-                />
-              ) : (
-                <button
-                  onClick={() => setIsLoginOpen(true)}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-white/15 text-white border border-white/25 rounded-2xl font-bold hover:bg-white/25 hover:scale-105 transition-all active:scale-95 backdrop-blur-sm"
-                >
-                  <LogIn size={18} />
-                  <span>{siteSettings.navigasyon_butonu_metni}</span>
-                </button>
-              )
-            )}
+            ) : null}
           </div>
         </div>
       </nav>
@@ -617,10 +604,10 @@ export default function App() {
                 )}
               </div>
             <div className="flex flex-row gap-3">
-              {/* İndir butonu — görselden renk alır */}
+              {/* Windows İndir butonu */}
+              {releaseData.downloadUrl && (
               <div className="relative">
-                {/* Pulse glow ring */}
-                {!downloadComplete && !isDownloading && (
+                {!completePlatform && !downloadingPlatform && (
                   <motion.span
                     className="absolute inset-0 rounded-2xl pointer-events-none"
                     animate={{
@@ -633,38 +620,69 @@ export default function App() {
                   />
                 )}
               <button
-                onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e); }}
-                disabled={isDownloading && !isEditMode}
-                style={downloadComplete ? {} : { backgroundColor: btnColor }}
-                className={`group relative overflow-hidden px-7 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-colors active:scale-95 text-sm shadow-2xl text-white min-w-[180px] ${
-                  downloadComplete ? 'bg-emerald-500' : 'hover:brightness-110'
+                onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e, 'windows'); }}
+                disabled={!!downloadingPlatform && !isEditMode}
+                style={completePlatform === 'windows' ? {} : { backgroundColor: btnColor }}
+                className={`group relative overflow-hidden px-5 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-colors active:scale-95 text-sm shadow-2xl text-white min-w-[160px] ${
+                  completePlatform === 'windows' ? 'bg-emerald-500' : 'hover:brightness-110'
                 } disabled:opacity-90 disabled:cursor-wait`}
               >
                 <AnimatePresence mode="wait">
-                  {isDownloading ? (
+                  {downloadingPlatform === 'windows' ? (
                     <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
                       <Loader2 className="animate-spin" size={16} /><span>İndiriliyor...</span>
                     </motion.div>
-                  ) : downloadComplete ? (
+                  ) : completePlatform === 'windows' ? (
                     <motion.div key="complete" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
                       <CheckCircle2 size={16} /><span>Başlatıldı!</span>
                     </motion.div>
                   ) : (
                     <motion.div key="default" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                      <Download size={16} />
-                      {isEditMode ? (
-                        <input type="text" value={siteSettings.indirme_butonu_metni} onChange={(e) => setSiteSettings({...siteSettings, indirme_butonu_metni: e.target.value})} className="bg-transparent border-b border-dashed border-white/50 outline-none w-20 text-center" onClick={(e) => e.stopPropagation()} />
-                      ) : (
-                        <span>{siteSettings.indirme_butonu_metni}</span>
-                      )}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+                      <span>Windows</span>
                     </motion.div>
                   )}
                 </AnimatePresence>
-                {isDownloading && (
+                {downloadingPlatform === 'windows' && (
                   <motion.div initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 h-0.5 bg-white/40" />
                 )}
               </button>
               </div>
+              )}
+
+              {/* Android İndir butonu */}
+              {releaseData.androidDownloadUrl && (
+              <div className="relative">
+              <button
+                onClick={(e) => { if (isEditMode) { e.preventDefault(); return; } handleDownload(e, 'android'); }}
+                disabled={!!downloadingPlatform && !isEditMode}
+                style={completePlatform === 'android' ? {} : { backgroundColor: btnColor }}
+                className={`group relative overflow-hidden px-5 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-colors active:scale-95 text-sm shadow-2xl text-white min-w-[160px] ${
+                  completePlatform === 'android' ? 'bg-emerald-500' : 'hover:brightness-110'
+                } disabled:opacity-90 disabled:cursor-wait`}
+              >
+                <AnimatePresence mode="wait">
+                  {downloadingPlatform === 'android' ? (
+                    <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                      <Loader2 className="animate-spin" size={16} /><span>İndiriliyor...</span>
+                    </motion.div>
+                  ) : completePlatform === 'android' ? (
+                    <motion.div key="complete" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                      <CheckCircle2 size={16} /><span>Başlatıldı!</span>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="default" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.341a.96.96 0 0 0 .953-.957.96.96 0 0 0-.953-.958.96.96 0 0 0-.953.958.96.96 0 0 0 .953.957m-11.046 0a.96.96 0 0 0 .953-.957.96.96 0 0 0-.953-.958.96.96 0 0 0-.953.958.96.96 0 0 0 .953.957m11.4-6.243 2.006-3.475a.418.418 0 0 0-.152-.57.418.418 0 0 0-.57.153l-2.033 3.522A12.2 12.2 0 0 0 12 7.594c-1.8 0-3.502.398-5.128 1.134L4.84 5.206a.418.418 0 0 0-.57-.153.418.418 0 0 0-.153.57l2.006 3.475C2.69 11.266.343 14.778 0 18.916h24c-.344-4.138-2.69-7.65-6.123-9.818"/></svg>
+                      <span>Android</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                {downloadingPlatform === 'android' && (
+                  <motion.div initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 3.8, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 h-0.5 bg-white/40" />
+                )}
+              </button>
+              </div>
+              )}
 
               {/* Üye Ol butonu — sabit genişlik */}
               <div className="relative overflow-hidden bg-white/10 backdrop-blur-md text-white rounded-2xl font-bold flex items-center justify-center cursor-default border border-white/20 text-sm w-[130px] h-[50px]">
