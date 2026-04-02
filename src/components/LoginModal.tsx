@@ -6,9 +6,10 @@ import { supabase } from '../lib/supabase';
 interface LoginModalProps {
   onClose: () => void;
   btnColor?: string;
+  clickPos?: { x: number; y: number };
 }
 
-export const LoginModal = ({ onClose, btnColor = 'rgba(124, 58, 237, 0.92)' }: LoginModalProps) => {
+export const LoginModal = ({ onClose, btnColor = 'rgba(124, 58, 237, 0.92)', clickPos }: LoginModalProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -122,15 +123,27 @@ export const LoginModal = ({ onClose, btnColor = 'rgba(124, 58, 237, 0.92)' }: L
 
   const inputClass = "w-full py-4 bg-white/10 border border-white/15 rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/30 transition-all text-white placeholder:text-white/30 text-sm";
 
+  // Modal genişliği ~384px (max-w-sm), yüksekliği ~480px civarı
+  const modalW = 384;
+  const modalH = 500;
+  const pad = 12;
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 800;
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 600;
+  const rawX = clickPos ? clickPos.x : vw - pad - modalW;
+  const rawY = clickPos ? clickPos.y : 80;
+  const posX = Math.min(Math.max(pad, rawX), vw - modalW - pad);
+  const posY = Math.min(Math.max(pad, rawY), vh - modalH - pad);
+
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none">
       <div className="absolute inset-0 pointer-events-auto" onClick={onClose} />
 
       <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: -20, x: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0, x: 0 }}
-        exit={{ scale: 0.9, opacity: 0, y: -20, x: 20 }}
-        className="absolute top-20 right-6 w-full max-w-sm bg-black/55 backdrop-blur-xl border border-white/15 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden pointer-events-auto"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        style={{ left: posX, top: posY }}
+        className="absolute w-full max-w-sm bg-black/55 backdrop-blur-xl border border-white/15 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden pointer-events-auto"
       >
         <div className="p-6 space-y-6">
           {/* Başlık */}

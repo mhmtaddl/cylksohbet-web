@@ -42,6 +42,7 @@ const GITHUB_REPO = 'caylaklar-sesli-sohbet';
 
 export default function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [loginClickPos, setLoginClickPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [isSettingsLoading, setIsSettingsLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -331,7 +332,7 @@ export default function App() {
         <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-3">
             <div
-              onClick={() => { if (!user) setIsLoginOpen(true); }}
+              onClick={(e) => { if (!user) { setLoginClickPos({ x: e.clientX, y: e.clientY }); setIsLoginOpen(true); } }}
               className={`w-12 h-12 overflow-hidden rounded-2xl shadow-xl shadow-primary/20 border-2 border-primary/20 bg-surface-container-low ${!user ? 'cursor-pointer hover:scale-105 hover:border-primary/50 transition-all' : ''}`}
               title={!user ? 'Giriş Yap' : undefined}
             >
@@ -710,7 +711,7 @@ export default function App() {
 
       {/* Login Modal */}
       <AnimatePresence>
-        {isLoginOpen && <LoginModal onClose={() => setIsLoginOpen(false)} btnColor={btnColor} />}
+        {isLoginOpen && <LoginModal onClose={() => setIsLoginOpen(false)} btnColor={btnColor} clickPos={loginClickPos} />}
       </AnimatePresence>
     </div>
   );
